@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>COPD/Asthma Treatment Protocol</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>COPD/Asthma Treatment Protocol</h1>
+    <p class="subtitle">GOLD Algorithm · GINA Stepwise · Drug Reference</p>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('gold',this)">GOLD (COPD)</button>
+    <button class="tab-btn" onclick="switchTab('asthma',this)">GINA (Asthma)</button>
+    <button class="tab-btn" onclick="switchTab('drugs',this)">Drug Ref</button>
+  </div>
+
+  <!-- GOLD -->
+  <div id="tab-gold">
+    <h2>GOLD Treatment Groups</h2>
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-body" style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+        <div style="width:28px;height:28px;border-radius:50%;background:#437A22;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">A</div>
+        <div style="font-size:12px">
+          <div style="color:var(--muted)">mMRC 0–1 or CAT &lt;10 · 0 exacerbations/year</div>
+          <div style="margin-top:4px"><strong>Initial:</strong> Bronchodilator (LAMA preferred)</div>
+          <div><strong>Escalate:</strong> Switch to alt bronchodilator or add LABA</div>
+          <div style="color:var(--blue)"><strong>Eos:</strong> ICS not indicated</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-body" style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+        <div style="width:28px;height:28px;border-radius:50%;background:#D19900;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">B</div>
+        <div style="font-size:12px">
+          <div style="color:var(--muted)">mMRC ≥2 or CAT ≥10 · 0 exacerbations/year</div>
+          <div style="margin-top:4px"><strong>Initial:</strong> LAMA + LABA</div>
+          <div><strong>Escalate:</strong> Consider triple if persistent symptoms</div>
+          <div style="color:var(--blue)"><strong>Eos:</strong> ICS if eos ≥300 and symptoms persist</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-body" style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+        <div style="width:28px;height:28px;border-radius:50%;background:#A13544;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">E</div>
+        <div style="font-size:12px">
+          <div style="color:var(--muted)">Any symptoms · ≥1 moderate/severe exacerbation/year</div>
+          <div style="margin-top:4px"><strong>Initial:</strong> LAMA + LABA (or triple if eos ≥300)</div>
+          <div><strong>Escalate:</strong> Triple → roflumilast or azithromycin</div>
+          <div style="color:var(--blue)"><strong>Eos:</strong> ICS if eos ≥100; strongly indicated ≥300</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asthma -->
+  <div id="tab-asthma" style="display:none">
+    <h2>GINA Stepwise Treatment</h2>
+    <script>
+    const steps=[
+      {s:1,sev:"Mild intermittent",t1:"PRN low-dose ICS-formoterol",t2:"PRN ICS taken with SABA",rel:"PRN ICS-formoterol (T1) or SABA (T2)"},
+      {s:2,sev:"Mild persistent",t1:"PRN low-dose ICS-formoterol",t2:"Daily low-dose ICS",rel:"PRN ICS-formoterol or SABA"},
+      {s:3,sev:"Moderate persistent",t1:"Low-dose ICS-formoterol MART",t2:"Low-dose ICS-LABA + PRN SABA",rel:"PRN ICS-formoterol or SABA"},
+      {s:4,sev:"Moderate-severe",t1:"Medium-dose ICS-formoterol MART",t2:"Medium-dose ICS-LABA + PRN SABA",rel:"PRN ICS-formoterol or SABA"},
+      {s:5,sev:"Severe",t1:"High-dose ICS-LABA + LAMA ± biologic",t2:"High-dose ICS-LABA + LAMA + PRN SABA",rel:"PRN ICS-formoterol or SABA"},
+    ];
+    document.write(steps.map(s=>`<div class="card" style="margin-bottom:8px"><div class="card-body" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px"><div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">${s.s}</div><div style="font-size:12px"><div style="font-weight:600">${s.sev}</div><div style="margin-top:4px"><strong>Track 1 (Preferred):</strong> ${s.t1}</div><div><strong>Track 2 (Alt):</strong> ${s.t2}</div><div style="color:var(--muted)"><strong>Reliever:</strong> ${s.rel}</div></div></div></div>`).join(''));
+    </script>
+  </div>
+
+  <!-- Drugs -->
+  <div id="tab-drugs" style="display:none">
+    <h2>Drug Therapy Reference</h2>
+    <script>
+    const sections=[
+      {cat:"Short-Acting Rescue",drugs:[
+        {brand:"Ventolin HFA / ProAir",generic:"Albuterol",type:"SABA",dosing:"90 mcg, 1-2 puffs q4-6h PRN",device:"MDI",pearl:"First-line rescue; avoid overuse (>2 canisters/year = poor control)"},
+        {brand:"Atrovent HFA",generic:"Ipratropium",type:"SAMA",dosing:"17 mcg, 2 puffs QID",device:"MDI",pearl:"Less effective than LAMA; use for acute relief"},
+        {brand:"Combivent Respimat",generic:"Albuterol/Ipratropium",type:"SABA+SAMA",dosing:"100/20 mcg, 1 puff QID",device:"SMI",pearl:"Superior to either alone for acute symptoms"},
+        {brand:"Duoneb",generic:"Albuterol/Ipratropium",type:"SABA+SAMA",dosing:"3mg/0.5mg q4h PRN",device:"SVN",pearl:"Greater FEV₁ improvement vs monotherapy; peak at 1.5h"},
+      ]},
+      {cat:"LAMA",drugs:[
+        {brand:"Spiriva HandiHaler",generic:"Tiotropium",type:"LAMA",dosing:"18 mcg once daily",device:"DPI",pearl:"Preferred initial bronchodilator; reduces exacerbations more than LABA"},
+        {brand:"Spiriva Respimat",generic:"Tiotropium",type:"LAMA",dosing:"2.5 mcg (2 puffs) daily",device:"SMI",pearl:"Easier technique; good for weak inspiratory flow"},
+        {brand:"Incruse Ellipta",generic:"Umeclidinium",type:"LAMA",dosing:"62.5 mcg once daily",device:"DPI",pearl:"Once-daily; Ellipta platform"},
+        {brand:"Yupelri",generic:"Revefenacin",type:"LAMA",dosing:"175 mcg once daily",device:"Nebulizer",pearl:"For patients unable to use handheld inhalers"},
+      ]},
+      {cat:"ICS + LABA",drugs:[
+        {brand:"Advair Diskus/HFA",generic:"Fluticasone/Salmeterol",type:"ICS+LABA",dosing:"100-500/50 mcg BID",device:"DPI/MDI",pearl:"Generic available 2024; cost significantly reduced"},
+        {brand:"Symbicort",generic:"Budesonide/Formoterol",type:"ICS+LABA",dosing:"80-160/4.5 mcg BID",device:"MDI",pearl:"MART-capable; maintenance AND reliever"},
+        {brand:"Breo Ellipta",generic:"Fluticasone furoate/Vilanterol",type:"ICS+LABA",dosing:"100-200/25 mcg daily",device:"DPI",pearl:"Once-daily"},
+        {brand:"Airsupra",generic:"Budesonide/Albuterol",type:"ICS+SABA",dosing:"80/180 mcg PRN",device:"MDI",pearl:"First ICS-SABA rescue; FDA approved 2023"},
+      ]},
+      {cat:"Triple Therapy",drugs:[
+        {brand:"Trelegy Ellipta",generic:"FF/Umeclidinium/Vilanterol",type:"ICS+LAMA+LABA",dosing:"100/62.5/25 mcg daily",device:"DPI",pearl:"Once-daily; mortality benefit in COPD (IMPACT trial)"},
+        {brand:"Breztri Aerosphere",generic:"Budesonide/Glycopyrrolate/Formoterol",type:"ICS+LAMA+LABA",dosing:"160/9/4.8 mcg BID",device:"MDI",pearl:"BID dosing; ETHOS trial"},
+      ]},
+      {cat:"Adjunct",drugs:[
+        {brand:"Daliresp",generic:"Roflumilast",type:"PDE-4",dosing:"250 mcg daily ×4 wk → 500 mcg daily",device:"Oral",pearl:"Group E + chronic bronchitis; FEV₁ <50%; 14-15% exacerbation reduction"},
+        {brand:"Zithromax",generic:"Azithromycin",type:"Macrolide",dosing:"250 mg daily or 500 mg 3×/wk ×12 mo",device:"Oral",pearl:"Former smokers only; 27-42% exacerbation reduction; monitor QTc"},
+        {brand:"Mucomyst",generic:"N-acetylcysteine",type:"Mucolytic",dosing:"600 mg BID",device:"Oral",pearl:"Chronic bronchitis phenotype; modest exacerbation reduction (~22%)"},
+      ]},
+    ];
+    document.write(sections.map(sec=>`
+      <details class="card" style="margin-bottom:8px">
+        <summary>${sec.cat} <span style="font-size:11px;color:var(--muted);font-weight:400">(${sec.drugs.length})</span></summary>
+        <div class="detail-body">${sec.drugs.map(d=>`
+          <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+              <span style="font-weight:600;font-size:13px">${d.brand}</span>
+              <span class="badge" style="flex-shrink:0;font-size:10px">${d.type}</span>
+            </div>
+            <div style="font-size:12px;color:var(--muted)">${d.generic}</div>
+            <div style="font-size:12px;margin-top:2px">${d.dosing} · <em>${d.device}</em></div>
+            <div style="font-size:11px;color:var(--muted);border-left:2px solid var(--primary);padding-left:6px;margin-top:4px">${d.pearl}</div>
+          </div>`).join('')}
+        </div>
+      </details>`).join(''));
+    </script>
+  </div>
+
+  <div class="notice notice-blue" style="margin-top:8px">
+    <strong>Refs:</strong> GOLD 2024 Report · GINA 2024 Strategy
+  </div>
+</div>
+<script>
+function switchTab(name,btn){
+  ['gold','asthma','drugs'].forEach(t=>{document.getElementById('tab-'+t).style.display=(t===name)?'block':'none';});
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

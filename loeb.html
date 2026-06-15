@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Loeb Minimum Criteria</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>Loeb Minimum Criteria</h1>
+    <p class="subtitle">Antibiotic initiation · All SNF patients · Loeb et al. 2001</p>
+  </div>
+  <div class="notice notice-amber">Clinical tool for antibiotic initiation — not surveillance. ≥1 criterion met suggests antibiotics may be appropriate. Negative criteria suggest watchful waiting with reassessment.</div>
+
+  <!-- UTI No Catheter -->
+  <h2>UTI — No Indwelling Catheter</h2>
+  <div class="card" id="card-uti-nc">
+    <div class="card-body" style="padding-top:12px">
+      <button class="check-item" id="uti_nc_dysuria" onclick="toggle(this)"><div class="check-box">✓</div><span>Acute dysuria (alone is sufficient)</span></button>
+      <p style="font-size:11px;color:var(--muted);margin:6px 0 4px;font-weight:600">OR: fever/leukocytosis PLUS ≥1 of:</p>
+      <button class="check-item" id="uti_nc_fever" onclick="toggle(this)"><div class="check-box">✓</div><span>Fever (&gt;37.9°C oral / &gt;1.5°C above baseline) or leukocytosis</span></button>
+      <button class="check-item" id="uti_nc_cva" onclick="toggle(this)"><div class="check-box">✓</div><span>· Costovertebral angle tenderness</span></button>
+      <button class="check-item" id="uti_nc_suprapubic" onclick="toggle(this)"><div class="check-box">✓</div><span>· Suprapubic pain</span></button>
+      <button class="check-item" id="uti_nc_hematuria" onclick="toggle(this)"><div class="check-box">✓</div><span>· Gross hematuria</span></button>
+      <button class="check-item" id="uti_nc_incontinence" onclick="toggle(this)"><div class="check-box">✓</div><span>· New or marked increase in incontinence</span></button>
+      <button class="check-item" id="uti_nc_urgency" onclick="toggle(this)"><div class="check-box">✓</div><span>· New or marked increase in urgency</span></button>
+      <button class="check-item" id="uti_nc_frequency" onclick="toggle(this)"><div class="check-box">✓</div><span>· New or marked increase in frequency</span></button>
+      <div id="res-uti-nc" class="result-notmet">Criteria not met</div>
+    </div>
+  </div>
+
+  <!-- UTI Catheter -->
+  <h2>UTI — Indwelling Catheter</h2>
+  <div class="card">
+    <div class="card-body" style="padding-top:12px">
+      <p style="font-size:11px;color:var(--muted);margin-bottom:6px;">≥1 of the following (no alternate explanation):</p>
+      <button class="check-item" id="uti_c_fever" onclick="toggle(this)"><div class="check-box">✓</div><span>Fever (&gt;37.9°C) or rigors with no other source</span></button>
+      <button class="check-item" id="uti_c_ams" onclick="toggle(this)"><div class="check-box">✓</div><span>New-onset altered mental status with no alternate diagnosis</span></button>
+      <button class="check-item" id="uti_c_suprapubic" onclick="toggle(this)"><div class="check-box">✓</div><span>New suprapubic pain or CVA tenderness</span></button>
+      <button class="check-item" id="uti_c_purulent" onclick="toggle(this)"><div class="check-box">✓</div><span>Purulent discharge around catheter</span></button>
+      <div id="res-uti-c" class="result-notmet">Criteria not met</div>
+    </div>
+  </div>
+
+  <!-- LRTI -->
+  <h2>Lower Respiratory Tract Infection</h2>
+  <div class="card">
+    <div class="card-body" style="padding-top:12px">
+      <p style="font-size:11px;color:var(--muted);margin-bottom:6px;">≥1 new sign or symptom:</p>
+      <button class="check-item" id="lrti_fever" onclick="toggle(this)"><div class="check-box">✓</div><span>Fever (&gt;37.9°C oral or &gt;1.5°C above baseline)</span></button>
+      <button class="check-item" id="lrti_cough" onclick="toggle(this)"><div class="check-box">✓</div><span>New or increased cough</span></button>
+      <button class="check-item" id="lrti_sputum" onclick="toggle(this)"><div class="check-box">✓</div><span>New or increased sputum production</span></button>
+      <button class="check-item" id="lrti_o2" onclick="toggle(this)"><div class="check-box">✓</div><span>O₂ sat &lt;94% on room air or &gt;3% drop from baseline</span></button>
+      <button class="check-item" id="lrti_exam" onclick="toggle(this)"><div class="check-box">✓</div><span>New or changed lung exam abnormalities</span></button>
+      <button class="check-item" id="lrti_pleurisy" onclick="toggle(this)"><div class="check-box">✓</div><span>Pleuritic chest pain</span></button>
+      <button class="check-item" id="lrti_rrate" onclick="toggle(this)"><div class="check-box">✓</div><span>Respiratory rate &gt;25 breaths/min</span></button>
+      <div id="res-lrti" class="result-notmet">Criteria not met</div>
+    </div>
+  </div>
+
+  <!-- Skin -->
+  <h2>Skin / Soft Tissue / Wound Infection</h2>
+  <div class="card">
+    <div class="card-body" style="padding-top:12px">
+      <button class="check-item" id="skin_pus" onclick="toggle(this)"><div class="check-box">✓</div><span>Pus at wound, skin, or soft tissue site</span></button>
+      <button class="check-item" id="skin_signs" onclick="toggle(this)"><div class="check-box">✓</div><span>≥4 new/worsening signs: redness, warmth, swelling, tenderness, serous drainage, fever</span></button>
+      <div id="res-skin" class="result-notmet">Criteria not met</div>
+    </div>
+  </div>
+
+  <div class="notice notice-blue" style="margin-top:4px;">
+    <strong>Ref:</strong> Loeb M et al. Development of minimum criteria for the initiation of antibiotics in residents of long-term care facilities. <em>Infect Control Hosp Epidemiol.</em> 2001;22(2):120-124.
+  </div>
+  <button class="btn-reset" onclick="resetAll()">Reset All</button>
+</div>
+<script>
+const state = {};
+function toggle(btn) {
+  const id = btn.id;
+  state[id] = !state[id];
+  btn.classList.toggle('checked', state[id]);
+  evaluate();
+}
+function evaluate() {
+  // UTI no cath
+  const nc_dysuria = !!state['uti_nc_dysuria'];
+  const nc_fever = !!state['uti_nc_fever'];
+  const nc_other = ['uti_nc_cva','uti_nc_suprapubic','uti_nc_hematuria','uti_nc_incontinence','uti_nc_urgency','uti_nc_frequency'].some(k => state[k]);
+  const utiNC = nc_dysuria || (nc_fever && nc_other);
+  setResult('res-uti-nc', utiNC, 'UTI (no catheter) criteria met — antibiotics may be appropriate');
+
+  // UTI catheter
+  const utiC = ['uti_c_fever','uti_c_ams','uti_c_suprapubic','uti_c_purulent'].some(k => state[k]);
+  setResult('res-uti-c', utiC, 'UTI (catheter) criteria met — antibiotics may be appropriate');
+
+  // LRTI
+  const lrti = ['lrti_fever','lrti_cough','lrti_sputum','lrti_o2','lrti_exam','lrti_pleurisy','lrti_rrate'].some(k => state[k]);
+  setResult('res-lrti', lrti, 'LRTI criteria met — antibiotics may be appropriate');
+
+  // Skin
+  const skin = state['skin_pus'] || state['skin_signs'];
+  setResult('res-skin', skin, 'SSTI criteria met — antibiotics may be appropriate');
+}
+function setResult(id, met, metText) {
+  const el = document.getElementById(id);
+  if (met) { el.className = 'result-met'; el.innerHTML = '✓ ' + metText; }
+  else { el.className = 'result-notmet'; el.textContent = 'Criteria not met'; }
+}
+function resetAll() {
+  Object.keys(state).forEach(k => { state[k] = false; });
+  document.querySelectorAll('.check-item').forEach(b => b.classList.remove('checked'));
+  document.querySelectorAll('[id^="res-"]').forEach(r => { r.className = 'result-notmet'; r.textContent = 'Criteria not met'; });
+}
+</script>
+</body>
+</html>

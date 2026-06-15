@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CPIS Calculator — VAP</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>CPIS Calculator</h1>
+    <p class="subtitle">Clinical Pulmonary Infection Score · VAP / Vent/Trach patients</p>
+  </div>
+
+  <div class="score-box" id="scoreBox">
+    <div class="score-num" id="scoreNum">0</div>
+    <div class="score-label">/ 12 points</div>
+    <div class="score-interp" id="scoreInterp">Select findings below</div>
+  </div>
+
+  <!-- 1. Temp -->
+  <h2>1. Temperature</h2>
+  <div class="card">
+    <div class="card-body">
+      <label><select id="temp" onchange="calc()">
+        <option value="0">36.5–38.4 °C — 0 pts</option>
+        <option value="1">38.5–38.9 °C — 1 pt</option>
+        <option value="2">≤36.0 or ≥39.0 °C — 2 pts</option>
+      </select></label>
+    </div>
+  </div>
+
+  <!-- 2. WBC -->
+  <h2>2. White Blood Cell Count</h2>
+  <div class="card">
+    <div class="card-body">
+      <select id="wbc" onchange="calc()">
+        <option value="0">4,000–11,000/mm³ — 0 pts</option>
+        <option value="1">&lt;4,000 or &gt;11,000/mm³ — 1 pt</option>
+        <option value="2">+Bands ≥50% — add 1 pt (total 2)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 3. Tracheal Secretions -->
+  <h2>3. Tracheal Secretions</h2>
+  <div class="card">
+    <div class="card-body">
+      <select id="secretions" onchange="calc()">
+        <option value="0">None — 0 pts</option>
+        <option value="1">Non-purulent — 1 pt</option>
+        <option value="2">Purulent — 2 pts</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 4. Oxygenation -->
+  <h2>4. Oxygenation (PaO₂/FiO₂)</h2>
+  <div class="card">
+    <div class="card-body">
+      <select id="pf" onchange="calc()">
+        <option value="0">&gt;240 or ARDS — 0 pts</option>
+        <option value="2">≤240 and no ARDS — 2 pts</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 5. CXR -->
+  <h2>5. Chest X-Ray</h2>
+  <div class="card">
+    <div class="card-body">
+      <select id="cxr" onchange="calc()">
+        <option value="0">No infiltrate — 0 pts</option>
+        <option value="1">Diffuse or patchy infiltrate — 1 pt</option>
+        <option value="2">Localized infiltrate — 2 pts</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 6. Tracheal Aspirate Culture -->
+  <h2>6. Tracheal Aspirate Culture</h2>
+  <div class="card">
+    <div class="card-body">
+      <select id="culture" onchange="calc()">
+        <option value="0">No or minimal growth — 0 pts</option>
+        <option value="1">Moderate or heavy growth — 1 pt</option>
+        <option value="2">Same pathogen on Gram stain — add 1 pt (total 2)</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="interpretBox" class="notice notice-blue" style="margin-top:16px;display:none"></div>
+
+  <div class="notice notice-amber" style="margin-top:12px;">
+    <strong>Reference:</strong> Pugin J et al. Diagnosis of ventilator-associated pneumonia by bacteriologic analysis of bronchoscopic and nonbronchoscopic blind bronchoalveolar lavage fluid. <em>Am Rev Respir Dis.</em> 1991;143:1121-9. Score &gt;6 supports VAP diagnosis.
+  </div>
+
+  <button class="btn-reset" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+function calc() {
+  const t = +document.getElementById('temp').value;
+  const w = +document.getElementById('wbc').value;
+  const s = +document.getElementById('secretions').value;
+  const p = +document.getElementById('pf').value;
+  const c = +document.getElementById('cxr').value;
+  const cu = +document.getElementById('culture').value;
+  const total = t + w + s + p + c + cu;
+  document.getElementById('scoreNum').textContent = total;
+  const ib = document.getElementById('interpretBox');
+  ib.style.display = 'block';
+  if (total > 6) {
+    document.getElementById('scoreInterp').textContent = 'VAP likely — consider bronchoscopy or empiric therapy';
+    document.getElementById('scoreInterp').className = 'score-interp score-high';
+    document.getElementById('scoreBox').style.borderColor = '#A13544';
+    ib.className = 'notice notice-amber';
+    ib.innerHTML = '<strong>Score &gt;6:</strong> High probability of VAP. Initiate empiric antibiotic therapy per local antibiogram. Consider BAL/bronchoscopy for microbiologic confirmation.';
+  } else {
+    document.getElementById('scoreInterp').textContent = 'VAP less likely — continued monitoring';
+    document.getElementById('scoreInterp').className = 'score-interp score-low';
+    document.getElementById('scoreBox').style.borderColor = '#437A22';
+    ib.className = 'notice notice-green';
+    ib.innerHTML = '<strong>Score ≤6:</strong> VAP less likely. Continue monitoring. Reassess if clinical condition changes.';
+  }
+}
+function resetAll() {
+  ['temp','wbc','secretions','pf','cxr','culture'].forEach(id => document.getElementById(id).selectedIndex = 0);
+  document.getElementById('scoreNum').textContent = '0';
+  document.getElementById('scoreInterp').textContent = 'Select findings below';
+  document.getElementById('scoreInterp').className = 'score-interp';
+  document.getElementById('scoreBox').style.borderColor = '';
+  document.getElementById('interpretBox').style.display = 'none';
+}
+</script>
+</body>
+</html>

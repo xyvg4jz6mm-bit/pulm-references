@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Respiratory Treatments — Device Guide</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>Respiratory Treatments — Device Guide</h1>
+    <p class="subtitle">SABA · LABA · ICS · LAMA · Combos · Biologics · Allergy &amp; Asthma Network 2022</p>
+    <input id="search" type="text" placeholder="Search brand or generic…" oninput="filterDrugs()" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;margin-top:8px">
+  </div>
+
+  <div id="drug-list"></div>
+
+  <div class="notice notice-blue" style="margin-top:8px">
+    <strong>Ref:</strong> Allergy &amp; Asthma Network / CHEST Foundation Respiratory Treatments Device Guide 2022
+  </div>
+</div>
+<script>
+const cats=[
+  {name:"Short-Acting Beta2 Agonists (SABA)",color:"#EFF6FF",drugs:[
+    {brand:"ProAir HFA / Digihaler",generic:"Albuterol",dosing:"90 mcg/puff, 1-2 puffs PRN",device:"MDI/DPI",note:"Rescue; onset 5 min, duration 3-6h"},
+    {brand:"Ventolin HFA",generic:"Albuterol",dosing:"90 mcg/puff, 1-2 puffs q4-6h PRN",device:"MDI",note:""},
+    {brand:"Albuterol Sulfate (generic)",generic:"Albuterol",dosing:"2.5 mg/3 mL q4-6h PRN",device:"Neb",note:"SVN; most common nebulized rescue"},
+    {brand:"Xopenex HFA",generic:"Levalbuterol",dosing:"45 mcg/puff, 1-2 puffs q4-6h PRN",device:"MDI",note:"R-enantiomer of albuterol; less tachycardia"},
+    {brand:"Duoneb",generic:"Albuterol/Ipratropium",dosing:"3 mg/0.5 mg q4-6h PRN",device:"Neb",note:"SABA+SAMA combo; greater bronchodilation"},
+  ]},
+  {name:"Long-Acting Beta2 Agonists (LABA)",color:"#EFFAF7",drugs:[
+    {brand:"Arcapta Neohaler",generic:"Indacaterol",dosing:"75 mcg once daily",device:"DPI",note:"COPD only; onset 5 min"},
+    {brand:"Brovana",generic:"Arformoterol",dosing:"15 mcg BID",device:"Neb",note:"Nebulized LABA; COPD maintenance"},
+    {brand:"Serevent Diskus",generic:"Salmeterol",dosing:"50 mcg BID",device:"DPI",note:"Never alone in asthma without ICS (BBW)"},
+    {brand:"Striverdi Respimat",generic:"Olodaterol",dosing:"2.5 mcg (2 puffs) daily",device:"SMI",note:"COPD only; 24h duration"},
+  ]},
+  {name:"Inhaled Corticosteroids (ICS)",color:"#FFF7ED",drugs:[
+    {brand:"Arnuity Ellipta",generic:"Fluticasone furoate",dosing:"50-200 mcg daily",device:"DPI",note:"Once-daily; higher receptor affinity"},
+    {brand:"Asmanex Twisthaler/HFA",generic:"Mometasone",dosing:"110-440 mcg daily or BID",device:"DPI/MDI",note:"Rinse mouth"},
+    {brand:"Flovent HFA/Diskus",generic:"Fluticasone propionate",dosing:"44-500 mcg BID",device:"MDI/DPI",note:"Rinse mouth; high first-pass metabolism"},
+    {brand:"Pulmicort Flexhaler",generic:"Budesonide",dosing:"90-360 mcg BID",device:"DPI",note:""},
+    {brand:"Pulmicort Respules",generic:"Budesonide",dosing:"0.25-1 mg BID",device:"Neb",note:"Nebulized ICS; ICU/trach patients"},
+    {brand:"QVAR RediHaler",generic:"Beclomethasone",dosing:"40-320 mcg BID",device:"MDI",note:"Breath-actuated; smaller particle size"},
+  ]},
+  {name:"SAMA",color:"#FEFCE8",drugs:[
+    {brand:"Atrovent HFA",generic:"Ipratropium",dosing:"17 mcg/puff, 2 puffs QID",device:"MDI",note:"Peak effect 1-2h, duration 4-6h"},
+    {brand:"Atrovent Neb",generic:"Ipratropium",dosing:"0.5 mg (2.5 mL) QID",device:"Neb",note:"SVN; mainstay in ICU/trach"},
+  ]},
+  {name:"Long-Acting Muscarinic Antagonists (LAMA)",color:"#FEFCE8",drugs:[
+    {brand:"Incruse Ellipta",generic:"Umeclidinium",dosing:"62.5 mcg daily",device:"DPI",note:"Once-daily"},
+    {brand:"Lonhala Magnair",generic:"Glycopyrrolate",dosing:"25 mcg BID",device:"Neb",note:"eFlow nebulizer required"},
+    {brand:"Spiriva HandiHaler",generic:"Tiotropium",dosing:"18 mcg daily",device:"DPI",note:"Once-daily; landmark UPLIFT data"},
+    {brand:"Spiriva Respimat",generic:"Tiotropium",dosing:"2.5 mcg (2 puffs) daily",device:"SMI",note:"Also asthma ≥6 yrs"},
+    {brand:"Yupelri",generic:"Revefenacin",dosing:"175 mcg once daily",device:"Neb",note:"Once-daily nebulized LAMA"},
+  ]},
+  {name:"ICS + LABA Combinations",color:"#F0FDF4",drugs:[
+    {brand:"Advair Diskus/HFA",generic:"Fluticasone/Salmeterol",dosing:"100-500/50 mcg BID",device:"DPI/MDI",note:"Generic available 2024"},
+    {brand:"Breo Ellipta",generic:"Fluticasone furoate/Vilanterol",dosing:"100-200/25 mcg daily",device:"DPI",note:"Once-daily; COPD + asthma"},
+    {brand:"Dulera",generic:"Mometasone/Formoterol",dosing:"100-200/5 mcg BID",device:"MDI",note:"Asthma ≥5 yrs"},
+    {brand:"Symbicort",generic:"Budesonide/Formoterol",dosing:"80-160/4.5 mcg 1-2 puffs BID",device:"MDI",note:"MART strategy; COPD + asthma"},
+    {brand:"Airsupra",generic:"Budesonide/Albuterol",dosing:"80/180 mcg 2 puffs PRN",device:"MDI",note:"ICS+SABA rescue; FDA 2023"},
+  ]},
+  {name:"LAMA + LABA / Triple",color:"#FAF5FF",drugs:[
+    {brand:"Anoro Ellipta",generic:"Umeclidinium/Vilanterol",dosing:"62.5/25 mcg daily",device:"DPI",note:"COPD; once-daily"},
+    {brand:"Stiolto Respimat",generic:"Tiotropium/Olodaterol",dosing:"2.5/2.5 mcg daily",device:"SMI",note:"COPD; once-daily"},
+    {brand:"Trelegy Ellipta",generic:"FF/Umeclidinium/Vilanterol",dosing:"100/62.5/25 mcg daily",device:"DPI",note:"Triple; COPD + asthma Step 5; once-daily"},
+    {brand:"Breztri Aerosphere",generic:"BUD/Glycopyrrolate/Formoterol",dosing:"160/9/4.8 mcg BID",device:"MDI",note:"Triple; COPD; BID"},
+  ]},
+  {name:"Biologics",color:"#FFF1F5",drugs:[
+    {brand:"Dupixent",generic:"Dupilumab",dosing:"300 mg q2w SC",device:"SC",note:"Anti-IL-4/13; T2 asthma, COPD (eos ≥300)"},
+    {brand:"Nucala",generic:"Mepolizumab",dosing:"100 mg q4w SC",device:"SC",note:"Anti-IL-5; asthma + COPD eos ≥300 (2025)"},
+    {brand:"Fasenra",generic:"Benralizumab",dosing:"30 mg q4-8w SC",device:"SC",note:"Anti-IL-5Rα; eosinophil depletion"},
+    {brand:"Tezspire",generic:"Tezepelumab",dosing:"210 mg q4w SC",device:"SC",note:"Anti-TSLP; any T2 phenotype"},
+    {brand:"Xolair",generic:"Omalizumab",dosing:"Weight/IgE-based SC",device:"SC",note:"Anti-IgE; allergic asthma"},
+  ]},
+  {name:"Mucolytics & Airway Clearance",color:"#F0FFFE",drugs:[
+    {brand:"Mucomyst",generic:"Acetylcysteine (NAC)",dosing:"3-5 mL of 20% solution q4-8h",device:"Neb",note:"Precede with bronchodilator; can cause bronchospasm"},
+    {brand:"Hypertonic Saline 3%",generic:"Sodium chloride 3%",dosing:"4 mL BID-QID",device:"Neb",note:"Non-CF bronchiectasis; precede with SABA"},
+    {brand:"Hypertonic Saline 7%",generic:"Sodium chloride 7%",dosing:"4 mL BID",device:"Neb",note:"CF; also non-CF bronchiectasis"},
+    {brand:"Pulmozyme",generic:"Dornase alfa",dosing:"2.5 mg once daily",device:"Neb",note:"CF-specific; reduces sputum viscosity"},
+  ]},
+];
+
+function renderAll(filter='') {
+  const q = filter.toLowerCase();
+  const list = document.getElementById('drug-list');
+  list.innerHTML = cats.map(cat => {
+    const drugs = q ? cat.drugs.filter(d => d.brand.toLowerCase().includes(q) || d.generic.toLowerCase().includes(q) || d.note.toLowerCase().includes(q)) : cat.drugs;
+    if (!drugs.length) return '';
+    return `<details class="card" style="margin-bottom:8px" ${q?'open':''}>
+      <summary style="background:${cat.color}20">${cat.name} <span style="font-size:11px;color:var(--muted);font-weight:400">(${drugs.length})</span></summary>
+      <div class="detail-body">${drugs.map(d=>`
+        <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+            <span style="font-weight:600;font-size:13px">${d.brand}</span>
+            <span class="badge" style="font-size:10px;flex-shrink:0">${d.device}</span>
+          </div>
+          <div style="font-size:12px;color:var(--muted)">${d.generic}</div>
+          <div style="font-size:12px;margin-top:2px">${d.dosing}</div>
+          ${d.note?`<div style="font-size:11px;color:var(--muted);border-left:2px solid var(--primary);padding-left:6px;margin-top:4px">${d.note}</div>`:''}
+        </div>`).join('')}
+      </div>
+    </details>`;
+  }).join('');
+}
+function filterDrugs() { renderAll(document.getElementById('search').value); }
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Revised McGeer Criteria</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>Revised McGeer Criteria</h1>
+    <p class="subtitle">Infection surveillance · All SNF patients · Stone et al. 2012</p>
+  </div>
+  <div class="notice notice-blue">Surveillance tool — used to confirm/count infections for reporting. Not a substitute for clinical judgment on treatment.</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('constitutional',this)">Constitutional</button>
+    <button class="tab-btn" onclick="switchTab('rti',this)">RTI</button>
+    <button class="tab-btn" onclick="switchTab('uti',this)">UTI</button>
+    <button class="tab-btn" onclick="switchTab('ssti',this)">SSTI</button>
+    <button class="tab-btn" onclick="switchTab('gi',this)">GI</button>
+  </div>
+
+  <!-- Constitutional -->
+  <div id="tab-constitutional">
+    <h2>Constitutional Criteria (used by all syndromes)</h2>
+    <button class="check-item" id="fever" onclick="toggle(this)"><div class="check-box">✓</div><span>Fever: single oral &gt;37.8°C, repeated oral &gt;37.2°C, rectal &gt;37.5°C, or single &gt;1.1°C above baseline</span></button>
+    <button class="check-item" id="leukocytosis" onclick="toggle(this)"><div class="check-box">✓</div><span>Leukocytosis: WBC &gt;14,000/mm³, or &gt;6% bands, or ≥1,500 bands/mm³</span></button>
+    <button class="check-item" id="ams" onclick="toggle(this)"><div class="check-box">✓</div><span>Acute mental status change: acute onset + fluctuating course + inattention + disorganized thinking/altered LOC</span></button>
+    <button class="check-item" id="afd" onclick="toggle(this)"><div class="check-box">✓</div><span>Acute functional decline: ≥3-point increase in ADL score from baseline</span></button>
+    <div id="res-constitutional" class="result-notmet">No constitutional criteria met</div>
+  </div>
+
+  <!-- RTI -->
+  <div id="tab-rti" style="display:none">
+    <h2>CXR</h2>
+    <button class="check-item" id="rti_cxr_pos" onclick="toggle(this)"><div class="check-box">✓</div><span>CXR: pneumonia or new infiltrate present</span></button>
+    <button class="check-item" id="rti_cxr_neg" onclick="toggle(this)"><div class="check-box">✓</div><span>CXR: not done or negative for pneumonia/infiltrate</span></button>
+    <h2>Respiratory Signs/Symptoms</h2>
+    <button class="check-item" id="rti_cough" onclick="toggle(this)"><div class="check-box">✓</div><span>New or increased cough</span></button>
+    <button class="check-item" id="rti_sputum" onclick="toggle(this)"><div class="check-box">✓</div><span>New or increased sputum production</span></button>
+    <button class="check-item" id="rti_o2" onclick="toggle(this)"><div class="check-box">✓</div><span>O₂ sat &lt;94% on room air or &gt;3% decrease from baseline</span></button>
+    <button class="check-item" id="rti_exam" onclick="toggle(this)"><div class="check-box">✓</div><span>New or changed lung exam abnormalities</span></button>
+    <button class="check-item" id="rti_pleurisy" onclick="toggle(this)"><div class="check-box">✓</div><span>Pleuritic chest pain</span></button>
+    <button class="check-item" id="rti_rrate" onclick="toggle(this)"><div class="check-box">✓</div><span>Respiratory rate ≥25 breaths/min</span></button>
+    <div id="res-rti" class="result-notmet" style="margin-top:8px">RTI criteria not met</div>
+    <p style="font-size:11px;margin-top:8px;color:var(--muted)"><strong>Pneumonia:</strong> CXR+ · ≥1 resp symptom · ≥1 constitutional<br><strong>Bronchitis/Tracheobronchitis:</strong> CXR− · ≥2 resp symptoms · ≥1 constitutional</p>
+  </div>
+
+  <!-- UTI -->
+  <div id="tab-uti" style="display:none">
+    <h2>UTI — No Catheter</h2>
+    <button class="check-item" id="uti_nc_dysuria" onclick="toggle(this)"><div class="check-box">✓</div><span>Acute dysuria or pain/swelling/tenderness of testes, epididymis, or prostate</span></button>
+    <button class="check-item" id="uti_nc_fever_leuko" onclick="toggle(this)"><div class="check-box">✓</div><span>Fever or leukocytosis present</span></button>
+    <button class="check-item" id="uti_nc_cva" onclick="toggle(this)"><div class="check-box">✓</div><span>Costovertebral angle pain or tenderness</span></button>
+    <button class="check-item" id="uti_nc_suprapubic" onclick="toggle(this)"><div class="check-box">✓</div><span>Suprapubic pain</span></button>
+    <button class="check-item" id="uti_nc_hematuria" onclick="toggle(this)"><div class="check-box">✓</div><span>Gross hematuria</span></button>
+    <button class="check-item" id="uti_nc_incontinence" onclick="toggle(this)"><div class="check-box">✓</div><span>New or marked increase in incontinence</span></button>
+    <button class="check-item" id="uti_nc_urgency" onclick="toggle(this)"><div class="check-box">✓</div><span>New or marked increase in urgency</span></button>
+    <button class="check-item" id="uti_nc_frequency" onclick="toggle(this)"><div class="check-box">✓</div><span>New or marked increase in frequency</span></button>
+    <div id="res-uti-nc" class="result-notmet">Criteria not met</div>
+
+    <h2 style="margin-top:16px">UTI — Indwelling Catheter</h2>
+    <button class="check-item" id="uti_c_fever" onclick="toggle(this)"><div class="check-box">✓</div><span>Fever, rigors, or new-onset hypotension with no alternate source</span></button>
+    <button class="check-item" id="uti_c_ams" onclick="toggle(this)"><div class="check-box">✓</div><span>Acute mental status change or functional decline with leukocytosis, no alternate diagnosis</span></button>
+    <button class="check-item" id="uti_c_suprapubic" onclick="toggle(this)"><div class="check-box">✓</div><span>New suprapubic pain or CVA pain/tenderness</span></button>
+    <button class="check-item" id="uti_c_purulent" onclick="toggle(this)"><div class="check-box">✓</div><span>Purulent discharge around catheter or testicular/prostatic pain</span></button>
+    <div id="res-uti-c" class="result-notmet">Criteria not met</div>
+  </div>
+
+  <!-- SSTI -->
+  <div id="tab-ssti" style="display:none">
+    <h2>Cellulitis / Soft Tissue / Wound</h2>
+    <button class="check-item" id="ssti_pus" onclick="toggle(this)"><div class="check-box">✓</div><span>Pus at wound, skin, or soft tissue site</span></button>
+    <button class="check-item" id="ssti_heat" onclick="toggle(this)"><div class="check-box">✓</div><span>Heat (warmth) at affected site</span></button>
+    <button class="check-item" id="ssti_redness" onclick="toggle(this)"><div class="check-box">✓</div><span>Redness at site</span></button>
+    <button class="check-item" id="ssti_swelling" onclick="toggle(this)"><div class="check-box">✓</div><span>Swelling at site</span></button>
+    <button class="check-item" id="ssti_tenderness" onclick="toggle(this)"><div class="check-box">✓</div><span>Tenderness at site</span></button>
+    <button class="check-item" id="ssti_serous" onclick="toggle(this)"><div class="check-box">✓</div><span>Serous drainage</span></button>
+    <div id="res-ssti" class="result-notmet">Criteria not met</div>
+    <p style="font-size:11px;margin-top:8px;color:var(--muted)">Met if: pus present OR ≥2 local signs with ≥1 constitutional criterion</p>
+  </div>
+
+  <!-- GI -->
+  <div id="tab-gi" style="display:none">
+    <h2>GI Infection (incl. C. diff)</h2>
+    <button class="check-item" id="gi_diarrhea" onclick="toggle(this)"><div class="check-box">✓</div><span>Diarrhea: ≥3 loose/watery stools in 24h above baseline</span></button>
+    <button class="check-item" id="gi_vomiting" onclick="toggle(this)"><div class="check-box">✓</div><span>Vomiting: ≥2 episodes in 24h</span></button>
+    <button class="check-item" id="gi_nausea" onclick="toggle(this)"><div class="check-box">✓</div><span>Nausea</span></button>
+    <button class="check-item" id="gi_abpain" onclick="toggle(this)"><div class="check-box">✓</div><span>Abdominal pain or tenderness</span></button>
+    <button class="check-item" id="gi_cdiff" onclick="toggle(this)"><div class="check-box">✓</div><span>C. difficile toxin positive in stool</span></button>
+    <div id="res-gi" class="result-notmet">Criteria not met</div>
+    <p style="font-size:11px;margin-top:8px;color:var(--muted)">GI met if: diarrhea alone OR vomiting + ≥1 other GI symptom OR C. diff positive</p>
+  </div>
+
+  <div class="notice notice-blue" style="margin-top:16px;">
+    <strong>Ref:</strong> Stone ND et al. Surveillance definitions of infections in long-term care facilities. <em>ICHE.</em> 2012;33(10):965-977. CDC/SHEA surveillance definitions.
+  </div>
+  <button class="btn-reset" onclick="resetAll()">Reset All</button>
+</div>
+
+<script>
+const state = {};
+function toggle(btn) {
+  state[btn.id] = !state[btn.id];
+  btn.classList.toggle('checked', state[btn.id]);
+  evaluate();
+}
+function has(...ids) { return ids.some(id => !!state[id]); }
+function count(...ids) { return ids.filter(id => !!state[id]).length; }
+const constitutional = () => has('fever','leukocytosis','ams','afd');
+
+function evaluate() {
+  // Constitutional
+  setResult('res-constitutional', constitutional(), '≥1 constitutional criterion present');
+
+  // RTI
+  const respSymps = ['rti_cough','rti_sputum','rti_o2','rti_exam','rti_pleurisy','rti_rrate'];
+  const rCount = count(...respSymps);
+  const pneumonia = state['rti_cxr_pos'] && rCount >= 1 && constitutional();
+  const bronchitis = state['rti_cxr_neg'] && rCount >= 2 && constitutional();
+  if (pneumonia) setResult('res-rti', true, 'Pneumonia criteria met (CXR+ · ≥1 resp symptom · ≥1 constitutional)');
+  else if (bronchitis) setResult('res-rti', true, 'Bronchitis/Tracheobronchitis criteria met (CXR− · ≥2 resp · ≥1 constitutional)');
+  else setResult('res-rti', false, `RTI criteria not met — resp symptoms: ${rCount}`);
+
+  // UTI no cath
+  const nc_sym = ['uti_nc_cva','uti_nc_suprapubic','uti_nc_hematuria','uti_nc_incontinence','uti_nc_urgency','uti_nc_frequency'];
+  const utiNC = state['uti_nc_dysuria'] || (state['uti_nc_fever_leuko'] && has(...nc_sym)) || count(...nc_sym) >= 2;
+  setResult('res-uti-nc', utiNC, 'UTI (no catheter) criteria met');
+
+  // UTI cath
+  const utiC = has('uti_c_fever','uti_c_ams','uti_c_suprapubic','uti_c_purulent');
+  setResult('res-uti-c', utiC, 'UTI (catheter) criteria met');
+
+  // SSTI
+  const localSigns = count('ssti_heat','ssti_redness','ssti_swelling','ssti_tenderness','ssti_serous');
+  const ssti = state['ssti_pus'] || (localSigns >= 2 && constitutional());
+  setResult('res-ssti', ssti, 'SSTI criteria met');
+
+  // GI
+  const gi = state['gi_diarrhea'] || state['gi_cdiff'] || (state['gi_vomiting'] && has('gi_nausea','gi_abpain'));
+  setResult('res-gi', gi, 'GI infection criteria met');
+}
+function setResult(id, met, metText) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (met) { el.className = 'result-met'; el.innerHTML = '✓ ' + metText; }
+  else { el.className = 'result-notmet'; el.textContent = id === 'res-constitutional' ? 'No constitutional criteria met' : 'Criteria not met'; }
+}
+function switchTab(name, btn) {
+  ['constitutional','rti','uti','ssti','gi'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = (t === name) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function resetAll() {
+  Object.keys(state).forEach(k => { state[k] = false; });
+  document.querySelectorAll('.check-item').forEach(b => b.classList.remove('checked'));
+  document.querySelectorAll('[id^="res-"]').forEach(r => { r.className = 'result-notmet'; r.textContent = 'Criteria not met'; });
+  document.getElementById('res-constitutional').textContent = 'No constitutional criteria met';
+}
+</script>
+</body>
+</html>

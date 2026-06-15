@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AVAPS Reference</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>AVAPS Reference</h1>
+    <p class="subtitle">Average Volume-Assured Pressure Support · NIV mode for hypoventilation</p>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('settings',this)">Init Settings</button>
+    <button class="tab-btn" onclick="switchTab('snf',this)">SNF Order</button>
+  </div>
+
+  <div id="tab-overview">
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>What is AVAPS?</h3>
+      <p>BiPAP S/T mode with intelligent volume targeting. Automatically adjusts inspiratory pressure support breath-by-breath to maintain a consistent target tidal volume or minute ventilation.</p>
+    </div></div>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>How It Works</h3>
+      <p>Monitors ventilation and increases/decreases PS to hit preset target VT. Includes backup rate for minimum MV. Some devices use auto-EPAP to manage upper airway obstruction without sleep lab titration.</p>
+    </div></div>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>When to Use</h3>
+      <p>Preferred over fixed BiPAP when: concern for failure of standard BiPAP, need for volume targeting, or auto-EPAP would reduce setup burden (OHS, COPD + hypercapnia, neuromuscular disease).</p>
+    </div></div>
+    <div class="notice notice-amber">
+      <strong>SNF Discharge Criteria:</strong> Patient must be medically stable · Clear recovery plan · Not requiring active dose titration or close physician monitoring · Provide 3-day supply of scheduled medications
+    </div>
+  </div>
+
+  <div id="tab-settings" style="display:none">
+    <script>
+    const s=[
+      {p:"EPAP",v:"4-8 cmH₂O",n:"Use auto-EPAP if available to manage upper airway obstruction"},
+      {p:"Target Tidal Volume",v:"6-8 mL/kg IBW",n:"~400-600 mL for average adults"},
+      {p:"Backup Rate",v:"12-16 breaths/min",n:"Set 2-4 breaths below patient's spontaneous rate"},
+      {p:"Inspiratory Pressure Range",v:"Min 8 / Max 15-20 cmH₂O",n:"Device auto-adjusts within this range to hit target VT"},
+      {p:"Inspiratory Time",v:"0.8-1.2 seconds",n:""},
+      {p:"Rise Time",v:"Medium setting",n:"Adjust for patient comfort"},
+    ];
+    document.write(s.map(x=>`<div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span style="font-weight:600;font-size:13px">${x.p}</span>
+        <span class="badge">${x.v}</span>
+      </div>
+      ${x.n?`<p style="margin-top:4px;font-style:italic">${x.n}</p>`:''}
+    </div></div>`).join(''));
+    </script>
+  </div>
+
+  <div id="tab-snf" style="display:none">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Prescription checklist for SNF discharge orders</p>
+    <script>
+    const snf=[
+      {s:"Device",c:"BiPAP S/T with VAPS capability (Medicare E0471) or HMV (E0466) if FiO₂ >40% or high pressures"},
+      {s:"Interface",c:"Full face mask or nasal mask — specify size and type; heated humidifier; backup battery if appropriate"},
+      {s:"Mode",c:"AVAPS or VAPS (manufacturer-specific terminology)"},
+      {s:"Hours of Use",c:"Typically nocturnal (minimum 4 hrs/night) or as clinically indicated"},
+      {s:"Oxygen",c:"Specify flow rate if supplemental O₂ required"},
+      {s:"Documentation",c:"Diagnosis (OHS, COPD + hypercapnia, chronic respiratory failure) · ABG showing PaCO₂ ≥45 mmHg · Justification over fixed BiPAP · Follow-up plan"},
+      {s:"Follow-up",c:"Device data download within 1-2 weeks · Clinical reassessment within 30 days · Recheck ABG to confirm improvement"},
+    ];
+    document.write(snf.map(x=>`<div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">${x.s}</div>
+      <p>${x.c}</p>
+    </div></div>`).join(''));
+    </script>
+  </div>
+</div>
+<script>
+function switchTab(n,b){
+  ['overview','settings','snf'].forEach(t=>document.getElementById('tab-'+t).style.display=(t===n)?'block':'none');
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+}
+</script>
+</body>
+</html>

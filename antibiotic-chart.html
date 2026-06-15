@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Antibiotic Susceptibility Chart</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>Antibiotic Susceptibility Chart</h1>
+    <p class="subtitle">Coverage grid · Gram+/− · Anaerobes · Atypicals</p>
+    <input id="search" type="text" placeholder="Search drug class or name…" oninput="filterAbx()" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;margin-top:8px">
+  </div>
+
+  <div style="overflow-x:auto;margin-bottom:8px;-webkit-overflow-scrolling:touch">
+    <table class="tbl" id="abxTable">
+      <thead>
+        <tr>
+          <th style="min-width:130px;position:sticky;left:0;background:var(--bg);z-index:2">Drug Class</th>
+          <th title="MRSA">MRSA</th><th title="MSSA">MSSA</th><th title="Streptococcus">Strep</th>
+          <th title="E. coli">E.coli</th><th title="Proteus mirabilis">P.mir</th><th title="Klebsiella">Kleb</th>
+          <th title="Pseudomonas">Pseudo</th><th title="ESCAPPM organisms">ESCAP PM</th>
+          <th title="N. gonorrhoeae">N.gon</th><th title="N. meningitidis">N.men</th>
+          <th title="Anaerobes">Ana</th><th title="Atypicals">Atyp</th>
+        </tr>
+      </thead>
+      <tbody id="abxBody"></tbody>
+    </table>
+  </div>
+  <div style="font-size:11px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+    <span><span class="dot-yes" style="vertical-align:middle"></span> Active</span>
+    <span><span class="dot-no" style="vertical-align:middle"></span> Not active</span>
+    <span>ESCAP PM = Enterobacter, Serratia, Citrobacter, Acinetobacter, Providencia, Proteus, Morganella</span>
+  </div>
+</div>
+<script>
+const rows=[
+  {cls:"Penicillin G",drugs:"Penicillin G",c:[0,0,1,0,0,0,0,0,0,0,0,0]},
+  {cls:"Anti-staph Penicillins",drugs:"Nafcillin / Oxacillin",c:[0,1,0,0,0,0,0,0,0,0,0,0]},
+  {cls:"Aminopenicillins",drugs:"Ampicillin / Amoxicillin",c:[0,0,1,1,1,0,0,0,1,0,0,0]},
+  {cls:"1st Gen Ceph",drugs:"Cefazolin, Cephalexin",c:[0,1,1,1,1,0,0,0,0,0,0,0]},
+  {cls:"2nd Gen Ceph",drugs:"Cephotetan, Cefoxitin",c:[0,1,1,1,1,0,0,0,1,0,1,0]},
+  {cls:"Ceftriaxone",drugs:"Ceftriaxone",c:[0,1,1,1,1,1,0,0,1,1,0,0]},
+  {cls:"Ceftazidime",drugs:"Ceftazidime",c:[0,0,0,1,1,1,1,0,0,0,0,0]},
+  {cls:"4th Gen Ceph",drugs:"Cefepime",c:[0,1,1,1,1,1,1,1,0,0,0,0]},
+  {cls:"Augmentin / Unasyn",drugs:"Amox-Clav / Amp-Sulbactam",c:[0,1,1,1,1,1,0,0,1,0,1,0]},
+  {cls:"Zosyn",drugs:"Pip-Tazo",c:[0,1,1,1,1,1,1,0,0,0,1,0]},
+  {cls:"Ertapenem",drugs:"Ertapenem",c:[0,1,1,1,1,1,0,0,1,0,1,0]},
+  {cls:"Imipenem / Meropenem",drugs:"Imipenem, Meropenem",c:[0,1,1,1,1,1,1,1,0,0,1,0]},
+  {cls:"Ciprofloxacin",drugs:"Ciprofloxacin",c:[0,1,0,1,1,1,1,0,1,0,0,0]},
+  {cls:"Levofloxacin",drugs:"Levofloxacin",c:[0,1,1,1,1,1,1,0,1,0,0,1]},
+  {cls:"Moxifloxacin",drugs:"Moxifloxacin",c:[0,1,1,1,1,1,0,0,1,0,1,1]},
+  {cls:"Aminoglycosides",drugs:"Gent / Tobra / Amikacin",c:[0,0,0,1,1,1,1,0,0,0,0,0]},
+  {cls:"Clindamycin",drugs:"Clindamycin",c:[0,1,1,0,0,0,0,0,0,0,1,0]},
+  {cls:"Azithromycin",drugs:"Azithromycin",c:[0,0,0,0,0,0,0,0,1,0,0,1]},
+  {cls:"Doxycycline",drugs:"Doxycycline",c:[0,0,0,0,0,0,0,0,1,0,0,1]},
+  {cls:"Vancomycin",drugs:"Vancomycin",c:[1,1,1,0,0,0,0,0,0,0,0,0]},
+  {cls:"Bactrim",drugs:"TMP-SMX",c:[1,1,0,1,1,0,0,1,0,0,0,0]},
+  {cls:"Metronidazole",drugs:"Flagyl",c:[0,0,0,0,0,0,0,0,0,0,1,0]},
+];
+function renderRows(q='') {
+  const filtered = q ? rows.filter(r => r.cls.toLowerCase().includes(q)||r.drugs.toLowerCase().includes(q)) : rows;
+  document.getElementById('abxBody').innerHTML = filtered.map((r,i)=>`
+    <tr style="background:${i%2===0?'var(--surface)':'rgba(0,0,0,0.015)'}">
+      <td style="position:sticky;left:0;background:inherit;z-index:1">
+        <div style="font-weight:600;font-size:12px">${r.cls}</div>
+        <div style="font-size:10px;color:var(--muted)">${r.drugs}</div>
+      </td>
+      ${r.c.map(v=>`<td class="check-cell">${v?'<span class="dot-yes"></span>':'<span class="dot-no"></span>'}</td>`).join('')}
+    </tr>`).join('');
+}
+function filterAbx(){renderRows(document.getElementById('search').value.toLowerCase());}
+renderRows();
+</script>
+</body>
+</html>

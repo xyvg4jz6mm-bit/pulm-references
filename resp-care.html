@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Respiratory Care Pocket Reference</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>Respiratory Care Pocket Reference</h1>
+    <p class="subtitle">Vent modes · O2 delivery · Respiratory mechanics</p>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('modes',this)">Vent Modes</button>
+    <button class="tab-btn" onclick="switchTab('o2',this)">O2 Delivery</button>
+    <button class="tab-btn" onclick="switchTab('mechanics',this)">Mechanics</button>
+  </div>
+
+  <div id="tab-modes">
+    <div class="notice notice-blue">Mode Selection: AC-VC for non-spontaneous/ARDS · AC-PC/Dual for alternative · PSV for spontaneous non-ARDS · SIMV/APRV: no data to support regular use</div>
+    <script>
+    const modes=[
+      {name:"Volume Control (AC-VC)",controlled:"RR, VT, PEEP, FiO₂, Flow, I:E",init:"VT 6-8 mL/kg PBW · RR per pt · Ti 0.7-1s · FiO₂/PEEP per ARDSnet",pros:"Guaranteed MV; precise VT control",cons:"Fixed flow/Ti can worsen asynchrony; may over-deliver if compliance changes",notes:"Default for non-spontaneous or ARDS patients. Inspiratory pause (~0.3s) measures Pplat."},
+      {name:"Pressure Control (AC-PC)",controlled:"RR, Pinsp, PEEP, FiO₂, I:E",init:"Pinsp 8-20 cmH₂O · RR per pt · Ti 0.7-0.85s · I:E 1:2 or 1:3",pros:"Avoids high PIPs; variable flow improves synchrony",cons:"VT not guaranteed; changes with compliance/resistance",notes:"Pplat = set Pinsp. Alarms: high pressure 5-10 above PIP."},
+      {name:"Pressure Support (PSV)",controlled:"Pinsp (PS), PEEP, FiO₂",init:"SBT: Pinsp Δ5-10 cmH₂O (adjust for ETT size) · PEEP 5-8 · FiO₂ <0.5",pros:"Patient determines peak flow, VT, Ti — improved synchrony",cons:"No guaranteed MV; high PS → air trapping in COPD; fatigue risk",notes:"Flow cycled: ends when flow drops to ~25% of peak. Not equivalent to SBT unless confirmed."},
+      {name:"Dual Mode (PRVC / VC+)",controlled:"Target VT with variable Pinsp",init:"Same as AC-VC for VT/RR; set Pinsp min/max range",pros:"Auto-adjusts Pinsp to hit target VT despite changing compliance and resistance",cons:"Can't distinguish ↑VT from ↑effort → may ↓Pinsp → runaway loop",notes:"Also called AutoFlow, PRVC. Active expiratory valve unlike AC-VC."},
+    ];
+    document.write(modes.map(m=>`<details class="card" style="margin-bottom:8px">
+      <summary>${m.name}</summary>
+      <div class="detail-body">
+        <div class="row-kv"><span class="kv-key">Controlled</span><span class="kv-val">${m.controlled}</span></div>
+        <div class="row-kv"><span class="kv-key">Init Settings</span><span class="kv-val" style="text-align:right">${m.init}</span></div>
+        <div class="row-kv"><span class="kv-key pro">Pros</span><span class="kv-val pro">${m.pros}</span></div>
+        <div class="row-kv"><span class="kv-key con">Cons</span><span class="kv-val con">${m.cons}</span></div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);border-left:2px solid var(--primary);padding-left:8px;font-style:italic">${m.notes}</div>
+      </div></details>`).join(''));
+    </script>
+  </div>
+
+  <div id="tab-o2" style="display:none">
+    <script>
+    const o2=[
+      {name:"Nasal Cannula",fio2:"~24–44% (2-4% per LPM)",flow:"Up to 6 LPM",notes:"Humidify if >4 LPM; FiO₂ variable with minute ventilation"},
+      {name:"Simple Face Mask",fio2:"35–50%",flow:"6-10 LPM",notes:"Minimum 6 LPM to prevent CO₂ rebreathing"},
+      {name:"Non-Rebreather (NRB)",fio2:"60–95%",flow:"10-15 LPM",notes:"Limited if high respiratory drive; no WOB support"},
+      {name:"High Flow NC (HFNC)",fio2:"Up to ~90%+",flow:"Adults start 40 LPM 100%",notes:"Heated/humidified; deadspace washout; small PEEP effect. May improve outcomes vs NIPPV in acute hypoxemic RF"},
+      {name:"CPAP",fio2:"High (needs high-flow source)",flow:"Per device",notes:"Initial: 5-10 cmH₂O; adults up to 15; splints upper airway, increases lung volume"},
+      {name:"NIV / BiPAP",fio2:"High (needs high-flow source)",flow:"Per device",notes:"IPAP = PS + PEEP; EPAP = PEEP. Start PS Δ5-8 / PEEP 5-10. Titrate ΔP up to 15. Risk: aspiration if not alert"},
+    ];
+    document.write(o2.map(d=>`<div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">${d.name}</div>
+      <div style="display:flex;gap:16px;margin-top:4px;font-size:12px">
+        <span><strong>FiO₂:</strong> ${d.fio2}</span><span><strong>Flow:</strong> ${d.flow}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);border-left:2px solid var(--primary);padding-left:6px;margin-top:6px;font-style:italic">${d.notes}</div>
+    </div></div>`).join(''));
+    </script>
+  </div>
+
+  <div id="tab-mechanics" style="display:none">
+    <script>
+    const mech=[
+      {p:"PEEP",t:">5 cmH₂O",m:"Pressure at end-expiration. Always set. Prevents alveolar derecruitment"},
+      {p:"PIP",t:"<40 cmH₂O",m:"Peak Inspiratory Pressure. Reflects resistance + compliance"},
+      {p:"Pplat",t:"<30 cmH₂O",m:"Plateau pressure — reflects alveolar pressure only. Measure via inspiratory pause (no flow)"},
+      {p:"Driving Pressure (Pdr)",t:"<15 cmH₂O",m:"Pdr = Pplat − PEEP. Tidal stress marker. Mortality risk if >20"},
+      {p:"Minute Ventilation (MV)",t:"~6-8 L/min",m:"MV = VT × RR. Normal 4-6; higher 8-14 in hypoxemic RF. Adjust for pCO₂ goal"},
+      {p:"I:E Ratio",t:"1:2 or 1:3",m:"Normal. 1:4 or 1:5 for obstructive disease. I:E 1:1 → PEEPi + ↓CO"},
+      {p:"Compliance (C)",t:"60-80 mL/cmH₂O",m:"C = VT / Pdr. ARDS <40"},
+      {p:"Resistance (R)",t:"<10 cmH₂O/L/sec",m:"R = (PIP − Pplat) / flow. Concern if >15"},
+    ];
+    document.write(mech.map(m=>`<div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span style="font-weight:600;font-size:13px">${m.p}</span>
+        <span class="badge">${m.t}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${m.m}</div>
+    </div></div>`).join(''));
+    </script>
+  </div>
+</div>
+<script>
+function switchTab(n,b){
+  ['modes','o2','mechanics'].forEach(t=>document.getElementById('tab-'+t).style.display=(t===n)?'block':'none');
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+}
+</script>
+</body>
+</html>
