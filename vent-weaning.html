@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vent Weaning — Trach Collar Protocol</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>Vent Weaning — Trach Collar Protocol</h1>
+    <p class="subtitle">Evidence-based liberation for tracheostomized patients · SNF / LTACH</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('screen',this)">Screen</button>
+    <button class="tab-btn" onclick="switchTab('pswean',this)">PS Wean</button>
+    <button class="tab-btn" onclick="switchTab('tc',this)">TC Trials</button>
+    <button class="tab-btn" onclick="switchTab('post',this)">Decannulation</button>
+    <button class="tab-btn" onclick="switchTab('summary',this)">Order Set</button>
+    <button class="tab-btn" onclick="switchTab('refs',this)">References</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview">
+    <div class="notice notice-blue">
+      <strong>Bottom line:</strong> Progressive <strong>tracheostomy collar (TC) trials ("sprinting")</strong> outperform gradual pressure-support reduction — median weaning 15 vs 19 days, success 53% vs 45% (Jubran 2013, JAMA).
+    </div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Why TC trials win</h3>
+      <p>Direct unloading of the diaphragm during trials, ventilator rest overnight, and a clear binary endpoint. Benefit is most pronounced in the "late-failure" group — patients who tolerate ≥12 h screening before first failure (HR 3.33 for successful weaning vs PS, p=.005).</p>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Supporting data</h3>
+      <p>Cleveland Clinic retrospective (2024): daily TC trials associated with <strong>43% higher</strong> likelihood of successful liberation (HR 1.43, 95% CI 1.05–1.94). ATS/ACCP guideline strongly recommends <strong>protocolized weaning</strong> over physician-judgment-alone.</p>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Protocol at a glance</h3>
+      <div class="row-kv"><span class="kv-key">Phase 1</span><span class="kv-val">Daily readiness screen</span></div>
+      <div class="row-kv"><span class="kv-key">Phase 2</span><span class="kv-val">PS wean to 6–8 cmH₂O</span></div>
+      <div class="row-kv"><span class="kv-key">Phase 3</span><span class="kv-val">TC trials (sprinting)</span></div>
+      <div class="row-kv"><span class="kv-key">Phase 4</span><span class="kv-val">Decannulation workup</span></div>
+    </div></div>
+
+    <div class="notice notice-amber">
+      <strong>Caveat:</strong> In patients who fail within 12 h of first screening, weaning method did not change outcomes — age and prior vent duration dominated. Focus on diaphragm rehab, nutrition, and treating the underlying cause.
+    </div>
+  </div>
+
+  <!-- READINESS SCREEN -->
+  <div id="tab-screen" style="display:none">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Daily readiness assessment. All criteria should be met before advancing.</p>
+    <div id="screen-list"></div>
+    <div id="screen-result" class="result-notmet">Tap each criterion that is met</div>
+    <button class="btn-reset" onclick="resetScreen()">Reset</button>
+
+    <div class="card" style="margin-top:14px"><div class="card-body">
+      <h3>Notes</h3>
+      <p style="margin-top:6px">Screen daily even for stable patients. A single failed criterion means hold — do not advance to PS wean or TC trial that day.</p>
+    </div></div>
+
+    <script>
+    const screenItems=[
+      {k:"hemo", t:"Hemodynamically stable — no vasopressors or minimal dose"},
+      {k:"fio2", t:"FiO₂ ≤ 0.40–0.50 with SpO₂ ≥ 90%"},
+      {k:"peep", t:"PEEP ≤ 5–8 cm H₂O"},
+      {k:"cause",t:"Underlying cause of respiratory failure improving"},
+      {k:"rass", t:"Adequate alertness (RASS −2 to +1), no continuous sedation"},
+      {k:"rr",   t:"Respiratory rate ≤ 35 breaths/min"},
+      {k:"sec",  t:"Manageable secretions — able to cough effectively"},
+    ];
+    const screenState={};
+    function renderScreen(){
+      document.getElementById('screen-list').innerHTML = screenItems.map(x=>`
+        <button class="check-item ${screenState[x.k]?'checked':''}" onclick="toggleScreen('${x.k}')">
+          <span class="check-box">${screenState[x.k]?'✓':''}</span>
+          <span>${x.t}</span>
+        </button>`).join('');
+      const met = screenItems.every(x=>screenState[x.k]);
+      const r = document.getElementById('screen-result');
+      if(met){ r.className='result-met'; r.textContent='All criteria met — proceed with weaning step'; }
+      else { const n=screenItems.filter(x=>screenState[x.k]).length; r.className='result-notmet'; r.textContent=`${n}/${screenItems.length} met — hold`; }
+    }
+    function toggleScreen(k){ screenState[k]=!screenState[k]; renderScreen(); }
+    function resetScreen(){ screenItems.forEach(x=>screenState[x.k]=false); renderScreen(); }
+    renderScreen();
+    </script>
+  </div>
+
+  <!-- PS WEAN -->
+  <div id="tab-pswean" style="display:none">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Bridge from full support to TC-ready. Applies to patients on AC/SIMV.</p>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Step 1 — Transition to PSV</h3>
+      <p>Switch from AC/SIMV to PSV. Titrate to <strong>RR &lt; 30</strong>. Typical starting PS ~14 cmH₂O.</p>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Step 2 — Reduce PS</h3>
+      <div class="row-kv"><span class="kv-key">Increment</span><span class="kv-val">2 cmH₂O every 6–8 h</span></div>
+      <div class="row-kv"><span class="kv-key">Max/day</span><span class="kv-val">6 cmH₂O</span></div>
+      <div class="row-kv"><span class="kv-key">Target</span><span class="kv-val">PS 6–8 cmH₂O</span></div>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Step 3 — Advance to TC trial</h3>
+      <p>If patient tolerates <strong>PS 6–8 cmH₂O for ≥12 h</strong> without distress, proceed to tracheostomy collar trials.</p>
+    </div></div>
+
+    <div class="notice notice-amber">
+      <strong>Distress signals:</strong> RR &gt; 35 sustained, SpO₂ &lt; 90%, HR change &gt; 20%, accessory muscle use, diaphoresis, agitation. Return to prior PS level and reattempt after ≥2 h of full support.
+    </div>
+  </div>
+
+  <!-- TC TRIALS -->
+  <div id="tab-tc" style="display:none">
+    <div class="notice notice-blue">
+      Jubran protocol: aggressive daily unloading with structured overnight rest. Success = 5 consecutive days off vent (≥12 h/day × 2 days first, then start the 5-day clock).
+    </div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Days 1–2</h3>
+      <div class="row-kv"><span class="kv-key">On TC</span><span class="kv-val">Up to 12 h, humidified O₂</span></div>
+      <div class="row-kv"><span class="kv-key">Overnight</span><span class="kv-val">Return to AC × 12 h</span></div>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Day 3 onward</h3>
+      <div class="row-kv"><span class="kv-key">On TC</span><span class="kv-val">Extend to 24 h/day</span></div>
+      <div class="row-kv"><span class="kv-key">Return to vent</span><span class="kv-val">Only if distress</span></div>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>Success criterion</h3>
+      <p><strong>5 consecutive days</strong> of sustained unassisted breathing. Preceded by ≥12 h/day for 2 consecutive days before starting the 5-day clock.</p>
+    </div></div>
+
+    <h2>Failure Criteria — return to vent</h2>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div class="row-kv"><span class="kv-key">RR</span><span class="kv-val">&gt; 35/min for &gt; 5 min</span></div>
+      <div class="row-kv"><span class="kv-key">SpO₂</span><span class="kv-val">&lt; 90%</span></div>
+      <div class="row-kv"><span class="kv-key">HR</span><span class="kv-val">&gt; 140 or Δ &gt; 20%</span></div>
+      <div class="row-kv"><span class="kv-key">SBP</span><span class="kv-val">&gt; 180 or &lt; 90 mmHg</span></div>
+      <div class="row-kv"><span class="kv-key">Work of breathing</span><span class="kv-val">Accessory muscle use, diaphoresis, agitation</span></div>
+      <div class="row-kv"><span class="kv-key">Patient</span><span class="kv-val">Distress or requests to stop</span></div>
+    </div></div>
+
+    <div class="notice notice-green">
+      <strong>Rest between trials:</strong> full AC support ≥ 2 h before reattempting.
+    </div>
+  </div>
+
+  <!-- POST-LIBERATION / DECANNULATION -->
+  <div id="tab-post" style="display:none">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Once patient sustains 5+ days off the ventilator.</p>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>1 · Secretion assessment</h3>
+      <p><strong>≤ 1 suctioning every 4 h</strong> over a 12-h window suggests readiness.</p>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>2 · Swallow evaluation</h3>
+      <p>50 mL water drink test with cuff deflated. Assesses aspiration risk before capping.</p>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>3 · Occlusion / capping test</h3>
+      <p>Cap the trach with <strong>cuff deflated for 5 minutes</strong> to rule out tracheal obstruction. Progress to prolonged capping trial.</p>
+    </div></div>
+
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <h3>4 · Decannulate</h3>
+      <p>If tolerating capping <strong>24 h</strong> or meeting the suctioning-frequency criterion — remove the trach.</p>
+    </div></div>
+
+    <div class="notice notice-amber">
+      <strong>Post-decannulation:</strong> monitor 24–48 h for stridor, work of breathing, secretion management, and need for replacement airway.
+    </div>
+  </div>
+
+  <!-- ORDER SET SUMMARY -->
+  <div id="tab-summary" style="display:none">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Practical order-set summary for SNF / LTACH.</p>
+    <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr>
+        <th>Phase</th><th>Intervention</th><th>Duration / Target</th><th>Key Parameters</th><th>Ref</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Daily Screen</strong></td>
+          <td>Hemodynamics, oxygenation, alertness, secretions</td>
+          <td>Daily</td>
+          <td>FiO₂ ≤ 0.4 · PEEP ≤ 5–8 · RR ≤ 35 · SpO₂ ≥ 90%</td>
+          <td>1, 2</td>
+        </tr>
+        <tr>
+          <td><strong>2. PS Wean</strong></td>
+          <td>↓ PS by 2 cmH₂O q6–8 h</td>
+          <td>Until PS 6–8 tolerated ≥ 12 h</td>
+          <td>Max 6 cmH₂O/day · RR &lt; 30</td>
+          <td>1, 4</td>
+        </tr>
+        <tr>
+          <td><strong>3. TC Trials (Days 1–2)</strong></td>
+          <td>TC with humidified O₂ up to 12 h, then AC overnight</td>
+          <td>12 h on / 12 h off</td>
+          <td>Monitor failure criteria</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><strong>4. TC Trials (Day 3+)</strong></td>
+          <td>Extend TC to 24 h/day</td>
+          <td>5 consecutive days off vent</td>
+          <td>Return to AC if distress</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><strong>5. Post-Liberation</strong></td>
+          <td>Swallow eval, capping trial, secretion check</td>
+          <td>After 5 days off vent</td>
+          <td>Suction ≤ q4h · tolerate cap 24 h</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><strong>6. Decannulation</strong></td>
+          <td>Remove tracheostomy</td>
+          <td>When capping/suctioning criteria met</td>
+          <td>Monitor 24–48 h post</td>
+          <td>5</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="notice notice-green" style="margin-top:14px">
+      <strong>Guideline:</strong> ATS/ACCP strongly recommends protocolized weaning (RT/nurse-driven) over physician-judgment-alone — reduces vent duration and LOS.
+    </div>
+  </div>
+
+  <!-- REFERENCES -->
+  <div id="tab-refs" style="display:none">
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">1 · Jubran A, Grant BJ, Duffner LA, et al.</div>
+      <p style="margin-top:4px">Effect of Pressure Support vs Unassisted Breathing Through a Tracheostomy Collar on Weaning Duration in Patients Requiring Prolonged Mechanical Ventilation: A Randomized Trial. <em>JAMA.</em> 2013;309(7):671–7. doi:10.1001/jama.2013.159.</p>
+    </div></div>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">2 · McConville JF, Kress JP.</div>
+      <p style="margin-top:4px">Weaning Patients from the Ventilator. <em>N Engl J Med.</em> 2012;367(23):2233–9. doi:10.1056/NEJMra1203367.</p>
+    </div></div>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">3 · Thille AW, Gacouin A, Coudroy R, et al.</div>
+      <p style="margin-top:4px">Spontaneous-Breathing Trials with Pressure-Support Ventilation or a T-Piece. <em>N Engl J Med.</em> 2022;387(20):1843–1854. doi:10.1056/NEJMoa2209041.</p>
+    </div></div>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">4 · Perkins GD, Mistry D, Gates S, et al.</div>
+      <p style="margin-top:4px">Effect of Protocolized Weaning With Early Extubation to Noninvasive Ventilation vs Invasive Weaning on Time to Liberation From Mechanical Ventilation: The Breathe RCT. <em>JAMA.</em> 2018;320(18):1881–1888. doi:10.1001/jama.2018.13763.</p>
+    </div></div>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">5 · Hernández Martínez G, Rodriguez ML, Vaquero MC, et al.</div>
+      <p style="margin-top:4px">High-Flow Oxygen with Capping or Suctioning for Tracheostomy Decannulation. <em>N Engl J Med.</em> 2020;383(11):1009–1017. doi:10.1056/NEJMoa2010834.</p>
+    </div></div>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">6 · Neuhofs S, Mujanovic S, Fischer M, et al.</div>
+      <p style="margin-top:4px">Ventilator Liberation for Hospitalized Patients With Tracheostomy. <em>Respir Care.</em> 2026;:19433654261453039. doi:10.1177/19433654261453039.</p>
+    </div></div>
+    <div class="card" style="margin-bottom:8px"><div class="card-body">
+      <div style="font-weight:600;font-size:13px">7 · Girard TD, Alhazzani W, Kress JP, et al.</div>
+      <p style="margin-top:4px">An Official ATS/ACCP Clinical Practice Guideline: Liberation From Mechanical Ventilation in Critically Ill Adults — Rehabilitation Protocols, Ventilator Liberation Protocols, and Cuff Leak Tests. <em>Am J Respir Crit Care Med.</em> 2017;195(1):120–133. doi:10.1164/rccm.201610-2075ST.</p>
+    </div></div>
+  </div>
+</div>
+
+<script>
+function switchTab(n,b){
+  ['overview','screen','pswean','tc','post','summary','refs'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display = (t===n) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+</script>
+</body>
+</html>
