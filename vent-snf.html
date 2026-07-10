@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vent at the SNF — Management &amp; Weaning</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* page-local helpers, built on shared.css tokens */
+  .lead { font-size:13px; color:var(--muted); margin-bottom:12px; }
+  .calc-field { margin-bottom:10px; }
+  .calc-field label { display:block; font-size:12px; color:var(--muted); margin-bottom:2px; font-weight:600; }
+  .calc-field input, .calc-field select { width:100%; padding:9px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:14px; }
+  .seg { display:flex; gap:4px; margin-bottom:10px; }
+  .seg button { flex:1; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; }
+  .seg button.on { background:var(--primary); color:#fff; border-color:var(--primary); }
+  .out-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
+  .out-box { background:var(--primary-light); border:1px solid var(--primary); border-radius:10px; padding:10px 12px; text-align:center; }
+  .out-box .n { font-size:22px; font-weight:800; color:var(--primary); line-height:1.1; }
+  .out-box .l { font-size:11px; color:var(--muted); margin-top:3px; }
+  .subhead { font-size:14px; font-weight:700; color:var(--text); margin:16px 0 6px; }
+  .ref-num { color:var(--primary); font-weight:700; }
+  sup a { color:var(--primary); text-decoration:none; font-weight:600; font-size:10px; }
+  .mode-name { font-weight:700; font-size:14px; color:var(--text); }
+  .mode-tag { font-size:11px; color:var(--muted); font-weight:500; }
+  ul.tight { margin:6px 0 0 0; padding-left:18px; }
+  ul.tight li { font-size:12.5px; color:var(--text); margin-bottom:4px; line-height:1.45; }
+  ul.tight li b { color:var(--text); }
+  .klist .row-kv .kv-val { max-width:62%; }
+  .footer-note { font-size:11px; color:var(--faint); margin-top:20px; line-height:1.5; text-align:center; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="sticky-header">
+    <h1>Vent at the SNF</h1>
+    <p class="subtitle">Mechanical ventilation, weaning &amp; airway management · Skilled Nursing Facility point-of-care tool</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('modes',this)">Modes</button>
+    <button class="tab-btn" onclick="switchTab('init',this)">Initiate</button>
+    <button class="tab-btn" onclick="switchTab('manage',this)">Manage</button>
+    <button class="tab-btn" onclick="switchTab('wean',this)">Wean</button>
+    <button class="tab-btn" onclick="switchTab('airway',this)">Airway</button>
+    <button class="tab-btn" onclick="switchTab('decan',this)">Decannulate</button>
+    <button class="tab-btn" onclick="switchTab('trouble',this)">Alarms</button>
+    <button class="tab-btn" onclick="switchTab('emerg',this)">Emergency</button>
+    <button class="tab-btn" onclick="switchTab('refs',this)">Refs</button>
+  </div>
+
+  <!-- ============ MODES ============ -->
+  <div id="tab-modes">
+    <div class="notice notice-blue">
+      <strong>Lung-protective default:</strong> Vt <strong>6–8 mL/kg PBW</strong>, plateau ≤ 30 cmH₂O, driving pressure ≤ 14 cmH₂O — recommended across ARDS and non-ARDS patients.<sup><a href="#r8">8</a></sup><sup>,</sup><sup><a href="#r3">3</a></sup>
+    </div>
+
+    <details class="card" open>
+      <summary><span><span class="mode-name">VCV</span> &nbsp;<span class="mode-tag">Volume-Controlled (A/C)</span></span></summary>
+      <div class="detail-body">
+        <p style="margin-top:8px">Set a fixed tidal volume; airway pressure varies with compliance and resistance. Every breath — patient- or time-triggered — delivers the full set Vt.</p>
+        <div class="row-kv"><span class="kv-key">Clinician sets</span><span class="kv-val">Vt, RR, flow, FiO₂, PEEP</span></div>
+        <div class="row-kv"><span class="kv-key">Variable</span><span class="kv-val">PIP, plateau pressure</span></div>
+        <div class="row-kv"><span class="kv-key">Advantage</span><span class="kv-val pro">Guaranteed tidal volume</span></div>
+        <div class="row-kv"><span class="kv-key">Watch out</span><span class="kv-val con">Pressures spike if compliance drops (plug, bronchospasm)</span></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span><span class="mode-name">PCV</span> &nbsp;<span class="mode-tag">Pressure-Controlled</span></span></summary>
+      <div class="detail-body">
+        <p style="margin-top:8px">Set an inspiratory pressure; decelerating flow, Vt varies with mechanics.</p>
+        <div class="row-kv"><span class="kv-key">Clinician sets</span><span class="kv-val">Insp pressure, RR, Ti (or I:E), FiO₂, PEEP</span></div>
+        <div class="row-kv"><span class="kv-key">Variable</span><span class="kv-val">Tidal volume, flow</span></div>
+        <div class="row-kv"><span class="kv-key">Advantage</span><span class="kv-val pro">Caps peak pressure; better gas distribution</span></div>
+        <div class="row-kv"><span class="kv-key">Watch out</span><span class="kv-val con">Vt not guaranteed — monitor closely</span></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span><span class="mode-name">PCV-VG</span> &nbsp;<span class="mode-tag">PRVC / VC+ / AutoFlow</span></span></summary>
+      <div class="detail-body">
+        <p style="margin-top:8px">Decelerating-flow breaths with a volume target; ventilator auto-adjusts inspiratory pressure breath-to-breath to hit the set Vt.</p>
+        <div class="row-kv"><span class="kv-key">Clinician sets</span><span class="kv-val">Target Vt, RR, Ti, FiO₂, PEEP, Pmax</span></div>
+        <div class="row-kv"><span class="kv-key">Variable</span><span class="kv-val">Insp pressure (auto)</span></div>
+        <div class="row-kv"><span class="kv-key">Advantage</span><span class="kv-val pro">Consistent Vt, adapts to compliance</span></div>
+        <div class="row-kv"><span class="kv-key">Watch out</span><span class="kv-val con">Can mask worsening mechanics — set Pmax appropriately</span></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span><span class="mode-name">PSV</span> &nbsp;<span class="mode-tag">Pressure Support — spontaneous</span></span></summary>
+      <div class="detail-body">
+        <p style="margin-top:8px">Patient triggers every breath; set pressure augments each effort, flow-cycled to expiration. The workhorse weaning mode.</p>
+        <div class="row-kv"><span class="kv-key">Clinician sets</span><span class="kv-val">PS level, FiO₂, PEEP</span></div>
+        <div class="row-kv"><span class="kv-key">Variable</span><span class="kv-val">Vt, RR, Ti, flow</span></div>
+        <div class="row-kv"><span class="kv-key">Advantage</span><span class="kv-val pro">Patient-driven; muscle conditioning; weaning</span></div>
+        <div class="row-kv"><span class="kv-key">Watch out</span><span class="kv-val con">No guaranteed minute ventilation — set apnea backup</span></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span><span class="mode-name">SIMV</span> &nbsp;<span class="mode-tag">Synchronized Intermittent Mandatory</span></span></summary>
+      <div class="detail-body">
+        <p style="margin-top:8px">Set mandatory breaths synchronized to effort; spontaneous breaths between (± PS). Weaning by dropping the rate is <b>less preferred</b> than PSV/TC trials — may prolong weaning.<sup><a href="#r7">7</a></sup></p>
+        <div class="row-kv"><span class="kv-key">Clinician sets</span><span class="kv-val">Mandatory RR, Vt/pressure, PS, FiO₂, PEEP</span></div>
+        <div class="row-kv"><span class="kv-key">Variable</span><span class="kv-val">Total RR, spontaneous Vt</span></div>
+      </div>
+    </details>
+
+    <h2>Noninvasive Ventilation (NIV)</h2>
+    <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Parameter</th><th>CPAP</th><th>BiPAP</th></tr></thead>
+      <tbody>
+        <tr><td>Pressure</td><td>5–10 cmH₂O</td><td>IPAP 10–15 / EPAP 5–8</td></tr>
+        <tr><td>FiO₂</td><td>Titrate SpO₂ ≥ 92%</td><td>Titrate SpO₂ ≥ 92%</td></tr>
+        <tr><td>Backup rate</td><td>N/A</td><td>12–16/min (S/T mode)</td></tr>
+        <tr><td>Augments ventilation?</td><td>No (oxygenation only)</td><td>Yes (IPAP−EPAP = support)</td></tr>
+        <tr><td>Typical use</td><td>OSA, mild CHF edema, post-extubation</td><td>COPD w/ hypercapnia, CHF edema, NMD, OHS, palliative</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="notice notice-red" style="margin-top:12px;background:var(--red-bg);border:1px solid #D98A93;color:var(--red)">
+      <strong>NIV contraindications:</strong> can't protect airway / altered mental status · facial deformity or recent facial-airway surgery · hemodynamic instability · uncontrolled emesis or unmanageable secretions · cardiac/respiratory arrest.<sup><a href="#r14">14</a></sup>
+    </div>
+  </div>
+
+  <!-- ============ INITIATE ============ -->
+  <div id="tab-init" style="display:none">
+    <p class="lead">Set tidal volume on <strong>predicted body weight (PBW)</strong>, never actual weight. ARDSNet equation.<sup><a href="#r9">9</a></sup></p>
+
+    <div class="card"><div class="card-body">
+      <h3>PBW &amp; Tidal-Volume Calculator</h3>
+      <div class="seg" style="margin-top:8px">
+        <button id="sex-m" class="on" onclick="setSex('m')">Male</button>
+        <button id="sex-f" onclick="setSex('f')">Female</button>
+      </div>
+      <div class="seg" style="margin-bottom:8px">
+        <button id="unit-cm" class="on" onclick="setUnit('cm')">cm</button>
+        <button id="unit-in" onclick="setUnit('in')">inches</button>
+      </div>
+      <div class="calc-field">
+        <label id="ht-label">Height (cm)</label>
+        <input id="ht" type="number" inputmode="decimal" placeholder="e.g. 175" oninput="calcPBW()">
+      </div>
+      <div class="out-grid">
+        <div class="out-box"><div class="n" id="pbw-out">—</div><div class="l">PBW (kg)</div></div>
+        <div class="out-box"><div class="n" id="vt6-out">—</div><div class="l">Vt @ 6 mL/kg</div></div>
+      </div>
+      <div class="out-grid" style="margin-top:8px">
+        <div class="out-box"><div class="n" id="vt7-out">—</div><div class="l">Vt @ 7 mL/kg</div></div>
+        <div class="out-box"><div class="n" id="vt8-out">—</div><div class="l">Vt @ 8 mL/kg</div></div>
+      </div>
+      <p style="margin-top:8px;font-size:11.5px">Male PBW = 50 + 0.91 × (cm − 152.4) · Female PBW = 45.5 + 0.91 × (cm − 152.4)</p>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Typical Initial Settings</h3>
+      <div class="row-kv"><span class="kv-key">Mode</span><span class="kv-val">A/C (VCV or PCV-VG)</span></div>
+      <div class="row-kv"><span class="kv-key">Tidal volume</span><span class="kv-val">6–8 mL/kg PBW</span></div>
+      <div class="row-kv"><span class="kv-key">Rate</span><span class="kv-val">12–16/min (match minute ventilation)</span></div>
+      <div class="row-kv"><span class="kv-key">PEEP</span><span class="kv-val">5 cmH₂O (titrate to oxygenation)</span></div>
+      <div class="row-kv"><span class="kv-key">FiO₂</span><span class="kv-val">Start 40–100%, wean to SpO₂ ≥ 92%</span></div>
+      <div class="row-kv"><span class="kv-key">Plateau target</span><span class="kv-val">≤ 30 cmH₂O</span></div>
+      <div class="row-kv"><span class="kv-key">Driving pressure</span><span class="kv-val">≤ 14 cmH₂O</span></div>
+    </div></div>
+
+    <h2>Quick Reference — Vt by Height</h2>
+    <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Height</th><th>PBW ♂</th><th>PBW ♀</th><th>6 mL/kg</th><th>8 mL/kg</th></tr></thead>
+      <tbody>
+        <tr><td>5'0" (152)</td><td>50</td><td>45.5</td><td>273–300</td><td>364–400</td></tr>
+        <tr><td>5'3" (160)</td><td>57</td><td>52.4</td><td>314–342</td><td>419–456</td></tr>
+        <tr><td>5'6" (168)</td><td>64</td><td>59.7</td><td>358–382</td><td>478–512</td></tr>
+        <tr><td>5'9" (175)</td><td>71</td><td>66</td><td>396–426</td><td>528–568</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="notice notice-amber" style="margin-top:12px">
+      <strong>Special population:</strong> spinal cord injury may need <em>higher</em> Vt (up to 15–25 mL/kg IBW) per SCI-specific guidance — this differs from standard lung-protective targets.<sup><a href="#r21">21</a></sup>
+    </div>
+  </div>
+
+  <!-- ============ MANAGE ============ -->
+  <div id="tab-manage" style="display:none">
+    <p class="lead">Daily maintenance, VAP prevention, and the mechanics you monitor every shift.</p>
+
+    <div class="card"><div class="card-body">
+      <h3>VAP / VAE Prevention Bundle<sup><a href="#r2">2</a></sup></h3>
+      <ul class="tight">
+        <li>Head of bed elevated <b>30–45°</b></li>
+        <li>Daily readiness assessment + spontaneous awakening / breathing trials</li>
+        <li>Minimize sedation (avoid benzodiazepines where possible)</li>
+        <li>Oral care with regular antiseptic; subglottic suction if available</li>
+        <li>Maintain cuff pressure <b>20–30 cmH₂O</b> to limit micro-aspiration</li>
+        <li>Early mobilization; VTE and stress-ulcer prophylaxis per protocol</li>
+      </ul>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Humidification</h3>
+      <ul class="tight">
+        <li>All trach patients need airway humidification — the trach bypasses the nose</li>
+        <li><b>On vent:</b> heated humidifier preferred for prolonged use, or HME</li>
+        <li><b>On trach collar:</b> heated aerosol or large-volume nebulizer</li>
+        <li><b>Avoid HME</b> with thick/copious secretions, high minute ventilation, or temp &lt; 32°C</li>
+        <li>Inadequate humidification → mucus plugging (can be rapidly fatal)</li>
+      </ul>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Auto-PEEP (Intrinsic PEEP)</h3>
+      <p style="margin-top:6px"><b>Suspect:</b> air trapping, expiratory flow not reaching zero, trigger difficulty, hemodynamic compromise. Common in COPD/asthma, high RR, high Vt, short expiratory time.</p>
+      <ul class="tight">
+        <li>Reduce RR (lengthen expiratory time)</li>
+        <li>Reduce tidal volume</li>
+        <li>Increase inspiratory flow (shortens Ti)</li>
+        <li>Treat bronchospasm (bronchodilators)</li>
+        <li>Apply external PEEP ≤ 80% of measured auto-PEEP to ease triggering</li>
+      </ul>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Recommended Alarm Settings</h3>
+      <div class="row-kv"><span class="kv-key">High pressure</span><span class="kv-val">10 above usual PIP (≤ 40 cmH₂O)</span></div>
+      <div class="row-kv"><span class="kv-key">Low pressure</span><span class="kv-val">5 below usual PIP</span></div>
+      <div class="row-kv"><span class="kv-key">High / low exhaled Vt</span><span class="kv-val">120% / 80% of target</span></div>
+      <div class="row-kv"><span class="kv-key">High RR</span><span class="kv-val">10 above baseline (or &gt; 35)</span></div>
+      <div class="row-kv"><span class="kv-key">Apnea</span><span class="kv-val">20 seconds</span></div>
+      <div class="row-kv"><span class="kv-key">Minute ventilation</span><span class="kv-val">± 20–30% of baseline</span></div>
+      <div class="row-kv"><span class="kv-key">Low SpO₂</span><span class="kv-val">&lt; 90% (or patient-specific)</span></div>
+    </div></div>
+  </div>
+
+  <!-- ============ WEAN ============ -->
+  <div id="tab-wean" style="display:none">
+    <div class="notice notice-blue">
+      <strong>Best evidence:</strong> progressive <strong>tracheostomy-collar trials</strong> beat gradual PS reduction in prolonged MV — shorter weaning &amp; higher success (Jubran, JAMA 2013).<sup><a href="#r22">22</a></sup> Use a <strong>protocol</strong> over physician judgment alone.<sup><a href="#r1">1</a></sup>
+    </div>
+
+    <h2>Daily Readiness Screen</h2>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Tap each criterion that is met. All must be met to advance.</p>
+    <div id="screen-list"></div>
+    <div id="screen-result" class="result-notmet">Tap each criterion that is met</div>
+    <button class="btn-reset" onclick="resetScreen()">Reset</button>
+
+    <h2>RSBI Calculator</h2>
+    <div class="card"><div class="card-body">
+      <p style="margin-bottom:8px;font-size:12.5px">RSBI = RR ÷ Vt (L), measured on minimal support / unassisted breathing.</p>
+      <div class="calc-field"><label>Respiratory rate (breaths/min)</label><input id="rsbi-rr" type="number" inputmode="decimal" placeholder="e.g. 24" oninput="calcRSBI()"></div>
+      <div class="calc-field"><label>Tidal volume (mL)</label><input id="rsbi-vt" type="number" inputmode="decimal" placeholder="e.g. 380" oninput="calcRSBI()"></div>
+      <div class="score-box" style="margin-top:4px;margin-bottom:0">
+        <div class="score-num" id="rsbi-out">—</div>
+        <div class="score-label">RSBI (breaths/min/L)</div>
+        <div class="score-interp" id="rsbi-interp"></div>
+      </div>
+      <p style="margin-top:8px;font-size:11.5px">≤ 105 favors an SBT attempt (sens ~0.83, spec ~0.58 — permissive screen, not pass/fail).<sup><a href="#r9b">9b</a></sup> In COPD, a threshold of ≤ 85 performs better.<sup><a href="#r16b">16b</a></sup></p>
+    </div></div>
+
+    <h2>Spontaneous Breathing Trial</h2>
+    <div class="card"><div class="card-body">
+      <h3>Method (pick one)</h3>
+      <ul class="tight">
+        <li><b>PSV 5–8 cmH₂O</b>, PEEP 0–5, FiO₂ ≤ 0.40 — preferred for initial SBT<sup><a href="#r1">1</a></sup></li>
+        <li><b>Trach collar</b> with humidified O₂, FiO₂ ≤ 0.40</li>
+        <li><b>CPAP</b> 5 cmH₂O, FiO₂ ≤ 0.40</li>
+      </ul>
+      <div class="row-kv" style="margin-top:8px"><span class="kv-key">Duration</span><span class="kv-val">30–120 minutes</span></div>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>SBT / Trial Failure — stop &amp; resume support</h3>
+      <div class="row-kv"><span class="kv-key">RR</span><span class="kv-val">&gt; 35/min for &gt; 5 min</span></div>
+      <div class="row-kv"><span class="kv-key">SpO₂</span><span class="kv-val">&lt; 90% despite adequate FiO₂</span></div>
+      <div class="row-kv"><span class="kv-key">HR</span><span class="kv-val">&gt; 140 or sustained Δ &gt; 20%</span></div>
+      <div class="row-kv"><span class="kv-key">SBP</span><span class="kv-val">&lt; 90 or &gt; 180 mmHg</span></div>
+      <div class="row-kv"><span class="kv-key">Work of breathing</span><span class="kv-val">Accessory muscle use, paradox</span></div>
+      <div class="row-kv"><span class="kv-key">Patient</span><span class="kv-val">Anxiety, diaphoresis, agitation</span></div>
+    </div></div>
+
+    <h2>Progressive Trach-Collar Trials (preferred)</h2>
+    <div class="card"><div class="card-body">
+      <div class="row-kv"><span class="kv-key">Step 1</span><span class="kv-val">30–60 min × 2/day, humidified O₂ to SpO₂ ≥ 92%</span></div>
+      <div class="row-kv"><span class="kv-key">Step 2</span><span class="kv-val">↑ 30–60 min/trial; ≥ 2 h full rest between; vent overnight</span></div>
+      <div class="row-kv"><span class="kv-key">Step 3</span><span class="kv-val">At 4–6 h, consolidate to one longer daily trial</span></div>
+      <div class="row-kv"><span class="kv-key">Milestone</span><span class="kv-val">≥ 12 h spontaneous × 2 consecutive days</span></div>
+      <div class="row-kv"><span class="kv-key">Then</span><span class="kv-val">Advance toward 24-h ventilator-free</span></div>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Gradual PS Reduction (alternative)</h3>
+      <p style="margin-top:6px">↓ PS by <b>2 cmH₂O q12–24 h</b> as tolerated → target PS 5–8 cmH₂O → transition to trach-collar trials. Consider for patients anxious about disconnection. SIMV rate-reduction is least preferred.</p>
+    </div></div>
+
+    <div class="notice notice-amber" style="margin-top:12px">
+      <strong>Diaphragm ultrasound (adjunct):</strong> thickening fraction cutoff ~30–36% and excursion ≥ 10–14 mm predict success; useful when diaphragm dysfunction is suspected (≈29% of ventilated patients).<sup><a href="#r12">12</a></sup>
+    </div>
+  </div>
+
+  <!-- ============ AIRWAY ============ -->
+  <div id="tab-airway" style="display:none">
+    <p class="lead">Tracheostomy care, suctioning, cuff and speaking-valve management.</p>
+
+    <div class="card"><div class="card-body">
+      <h3>Trach Care Schedule</h3>
+      <div class="row-kv"><span class="kv-key">Cuff pressure</span><span class="kv-val">q8–12 h · keep 20–30 cmH₂O</span></div>
+      <div class="row-kv"><span class="kv-key">Inner cannula</span><span class="kv-val">q8 h &amp; PRN · disposable preferred</span></div>
+      <div class="row-kv"><span class="kv-key">Stoma care</span><span class="kv-val">Daily · saline, keep dry, assess skin</span></div>
+      <div class="row-kv"><span class="kv-key">Tube change</span><span class="kv-val">q4–6 wk · first change by experienced clinician</span></div>
+      <div class="row-kv"><span class="kv-key">Ties/holder</span><span class="kv-val">Check q shift · 1–2 finger breadths</span></div>
+      <div class="row-kv"><span class="kv-key">Suction</span><span class="kv-val">PRN, not scheduled · closed in-line</span></div>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Suctioning Best Practice</h3>
+      <ul class="tight">
+        <li>Indication-based, not routine (audible/visible secretions, rhonchi, weak cough, SpO₂ drop, distress)</li>
+        <li>Closed in-line preferred — preserves PEEP/FiO₂, lowers infection risk</li>
+        <li>Pre-oxygenate 100% O₂ × 30–60 s; suction on withdrawal only</li>
+        <li>Limit each pass to <b>10–15 s</b>; catheter ≤ ½ the trach inner diameter</li>
+        <li>Routine saline instillation <b>not</b> recommended</li>
+      </ul>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Cuff Management</h3>
+      <ul class="tight">
+        <li>Inflated during mechanical ventilation to maintain seal</li>
+        <li>Deflated for speaking valve, capping, upper-airway patency checks</li>
+        <li>Manometer target <b>20–30 cmH₂O</b>; &lt; 20 → aspiration/leak; &gt; 30 → mucosal ischemia, stenosis</li>
+        <li>Suction above cuff + oropharynx before deflation</li>
+      </ul>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Speaking Valve (Passy-Muir)</h3>
+      <div class="notice notice-red" style="margin:6px 0;background:var(--red-bg);border:1px solid #D98A93;color:var(--red)">
+        <strong>Never place with the cuff inflated</strong> — creates a complete airway obstruction. Cuff must be <em>fully deflated</em>.
+      </div>
+      <p style="font-weight:600;font-size:12.5px;color:var(--text);margin-top:6px">Prerequisites</p>
+      <ul class="tight">
+        <li>Cuff fully deflated &amp; tolerated without desaturation</li>
+        <li>No complete upper-airway obstruction</li>
+        <li>Adequate consciousness &amp; manageable secretions</li>
+      </ul>
+      <p style="font-weight:600;font-size:12.5px;color:var(--text);margin-top:8px">Benefits</p>
+      <ul class="tight">
+        <li>Restores voice; restores subglottic pressure (may reduce aspiration)</li>
+        <li>Improves cough, smell/taste; may facilitate weaning</li>
+      </ul>
+      <p style="margin-top:8px;font-size:12px">Start 15–30 min trials; remove immediately for distress, stridor, or desaturation.</p>
+    </div></div>
+  </div>
+
+  <!-- ============ DECANNULATE ============ -->
+  <div id="tab-decan" style="display:none">
+    <p class="lead">Consider decannulation once fully liberated (trach collar / room air ≥ 24 h) with resolved indication.</p>
+
+    <div class="card"><div class="card-body">
+      <h3>Stepwise Protocol</h3>
+      <div class="row-kv"><span class="kv-key">1 · Downsize</span><span class="kv-val">To ID ≤ 6 mm; hold ≥ 24 h</span></div>
+      <div class="row-kv"><span class="kv-key">2 · Cuff deflation</span><span class="kv-val">Tolerate ≥ 12–24 h, no aspiration</span></div>
+      <div class="row-kv"><span class="kv-key">3 · Capping trial</span><span class="kv-val">24–48 h continuous (cuff down)</span></div>
+      <div class="row-kv"><span class="kv-key">Alt (REDECAP)</span><span class="kv-val">≤ 2 suction episodes/8 h — noninferior<sup><a href="#r4">4</a></sup></span></div>
+      <div class="row-kv"><span class="kv-key">4 · Airway assess</span><span class="kv-val">Laryngoscopy/bronch if concern<sup><a href="#r8b">8b</a></sup></span></div>
+      <div class="row-kv"><span class="kv-key">5 · Decannulate</span><span class="kv-val">Morning; occlusive dressing</span></div>
+      <div class="row-kv"><span class="kv-key">6 · Monitor</span><span class="kv-val">24–48 h; airway kit at bedside</span></div>
+    </div></div>
+
+    <h2>Decannulation Readiness Checklist</h2>
+    <div id="decan-list"></div>
+    <div id="decan-result" class="result-notmet">Tap each criterion that is met</div>
+    <button class="btn-reset" onclick="resetDecan()">Reset</button>
+
+    <div class="card" style="margin-top:14px"><div class="card-body">
+      <h3>Swallowing Assessment</h3>
+      <ul class="tight">
+        <li>SLP clinical swallow eval before decannulation</li>
+        <li><b>FEES</b> preferred bedside in SNF; VFSS if radiology available</li>
+        <li>Assess with cuff deflated (± speaking valve) to simulate post-decan conditions</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- ============ ALARMS / TROUBLE ============ -->
+  <div id="tab-trouble" style="display:none">
+    <p class="lead">Alarm troubleshooting and patient-ventilator dyssynchrony.</p>
+
+    <details class="card" open>
+      <summary>High-Pressure Alarm</summary>
+      <div class="detail-body">
+        <ul class="tight" style="margin-top:8px">
+          <li><b>Mucus plug / secretions</b> → suction; saline if thick</li>
+          <li><b>Bronchospasm</b> (wheeze) → bronchodilator; notify provider</li>
+          <li><b>Biting / coughing</b> → reassure; bite block if ETT</li>
+          <li><b>Water in circuit</b> → drain condensate</li>
+          <li><b>Kinked tubing</b> → straighten</li>
+          <li><b>Pneumothorax</b> (absent breath sounds, tracheal deviation, hypotension) → <span class="con">emergency, notify immediately</span></li>
+          <li><b>Worsening compliance</b> → check Pplat/driving pressure, CXR</li>
+          <li><b>Dyssynchrony</b> → adjust trigger/flow/mode; treat pain/anxiety</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary>Low-Pressure / Disconnect Alarm</summary>
+      <div class="detail-body">
+        <ul class="tight" style="margin-top:8px">
+          <li><b>Circuit disconnection</b> → reconnect</li>
+          <li><b>Cuff leak</b> → reinflate to 20–30 cmH₂O; change tube if persistent</li>
+          <li><b>Circuit leak</b> → replace components, tighten connections</li>
+          <li><b>Trach dislodgement</b> → mature stoma: reinsert; <span class="con">fresh trach (&lt; 7 d): do NOT reinsert — bag-mask &amp; call emergency airway</span></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary>Low Tidal-Volume Alarm</summary>
+      <div class="detail-body">
+        <ul class="tight" style="margin-top:8px">
+          <li><b>Cuff leak</b> → reinflate/replace tube</li>
+          <li><b>Circuit leak</b> → repair/replace</li>
+          <li><b>↓ patient effort</b> (spont modes) → stimulate; consider A/C</li>
+          <li><b>Worsening compliance</b> (PCV, PIP unchanged but Vt dropping) → notify provider; find cause</li>
+        </ul>
+      </div>
+    </details>
+
+    <h2>Patient-Ventilator Dyssynchrony<sup><a href="#r18">18</a></sup></h2>
+    <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Type</th><th>What happens</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Ineffective trigger</td><td>Effort doesn't trigger</td><td>↑ trigger sensitivity; ↓ auto-PEEP; external PEEP</td></tr>
+        <tr><td>Auto-trigger</td><td>Breaths without effort</td><td>↓ sensitivity; check leaks / water</td></tr>
+        <tr><td>Double trigger</td><td>Two breaths, one effort</td><td>↑ Vt or Ti; assess high drive</td></tr>
+        <tr><td>Flow starvation</td><td>Demand &gt; set flow</td><td>↑ flow (VCV) or switch PCV/PSV</td></tr>
+        <tr><td>Premature cycling</td><td>Cycles off too early</td><td>↑ Ti or adjust cycle threshold</td></tr>
+        <tr><td>Delayed cycling</td><td>Inspires too long</td><td>↓ Ti or adjust cycle threshold</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- ============ EMERGENCY ============ -->
+  <div id="tab-emerg" style="display:none">
+    <div class="notice notice-red" style="background:var(--red-bg);border:1px solid #D98A93;color:var(--red)">
+      <strong>DOPE</strong> — sudden distress on the ventilator: <b>D</b>isplacement · <b>O</b>bstruction · <b>P</b>neumothorax · <b>E</b>quipment. When in doubt, disconnect and bag manually.
+    </div>
+
+    <div class="card"><div class="card-body">
+      <h3>Cannot Ventilate Through Trach — Steps</h3>
+      <ol class="tight" style="padding-left:20px">
+        <li>Remove inner cannula → attempt ventilation</li>
+        <li>Suction through trach → attempt ventilation</li>
+        <li>Still failing: deflate cuff → remove trach tube</li>
+        <li><b>Mature stoma (&gt; 7 d):</b> reinsert same size; if fail, one size smaller; if fail, ETT through stoma</li>
+        <li><b>Immature stoma (&lt; 7 d):</b> do NOT blind-reinsert — cover stoma, bag-mask via face, call emergency airway</li>
+        <li>Unable by any route → CPR protocol, call 911</li>
+      </ol>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Tracheostomy Bleeding</h3>
+      <ul class="tight">
+        <li><b>Minor</b> (stoma) → gentle pressure; assess granulation; notify</li>
+        <li><b>Moderate</b> (tracheal) → suction; inflate cuff to tamponade; notify urgently</li>
+        <li><b>Massive / pulsatile</b> → suspect <span class="con">tracheoinnominate fistula</span>: inflate cuff maximally; if continues, remove tube &amp; apply digital pressure through stoma against posterior sternum (Utley); <span class="con">call 911 — emergent surgery</span></li>
+      </ul>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Bedside Emergency Kit — every trach patient</h3>
+      <ul class="tight">
+        <li>Bag-valve device with trach adapter AND face mask</li>
+        <li>Spare trach — same size AND one size smaller</li>
+        <li>Obturator; 10 mL syringe; water-soluble lubricant</li>
+        <li>Suction (portable + wall) &amp; catheters</li>
+        <li>Independent O₂ source; scissors to cut ties</li>
+      </ul>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>When to Escalate / Transfer</h3>
+      <ul class="tight">
+        <li>SpO₂ &lt; 88% despite FiO₂ &gt; 0.60 + PEEP optimization</li>
+        <li>New hemodynamic instability or suspected pneumothorax</li>
+        <li>Trach dislodgement in immature stoma (&lt; 7 d)</li>
+        <li>Massive trach bleeding (tracheoinnominate fistula)</li>
+        <li>Acute mental-status change</li>
+        <li>New fever + purulent secretions + worsening O₂ (VAP/VAE)</li>
+        <li>Vent malfunction unresolved; Pplat persistently &gt; 30</li>
+        <li>Cannot ventilate/oxygenate after DOPE workup</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- ============ REFS ============ -->
+  <div id="tab-refs" style="display:none">
+    <p class="lead">Synthesized from CHEST/ATS liberation guidelines, SHEA/IDSA VAP prevention, Surviving Sepsis Campaign, AAO-HNS tracheostomy consensus, and major reviews / RCTs.</p>
+
+    <div class="card"><div class="card-body" id="r1"><div style="font-weight:600;font-size:13px"><span class="ref-num">1</span> · Schmidt GA, Girard TD, Kress JP, et al.</div><p style="margin-top:4px">Liberation From Mechanical Ventilation in Critically Ill Adults: Executive Summary — ACCP/ATS Clinical Practice Guideline. <em>Chest.</em> 2017;151(1):160–165. doi:10.1016/j.chest.2016.10.037.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r2"><div style="font-weight:600;font-size:13px"><span class="ref-num">2</span> · Klompas M, Branson R, Cawcutt K, et al.</div><p style="margin-top:4px">Strategies to Prevent VAP, VAE, and NV-HAP in Acute-Care Hospitals: 2022 Update (SHEA/IDSA). <em>Infect Control Hosp Epidemiol.</em> 2022;43(6):687–713. doi:10.1017/ice.2022.88.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r3"><div style="font-weight:600;font-size:13px"><span class="ref-num">3</span> · Prescott HC, Antonelli M, Alhazzani W, et al.</div><p style="margin-top:4px">Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2026. <em>Crit Care Med.</em> 2026;54(4):725–812. doi:10.1097/CCM.0000000000007075.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r4"><div style="font-weight:600;font-size:13px"><span class="ref-num">4</span> · Hernández Martínez G, Rodriguez ML, Vaquero MC, et al. (REDECAP)</div><p style="margin-top:4px">High-Flow Oxygen with Capping or Suctioning for Tracheostomy Decannulation. <em>N Engl J Med.</em> 2020;383(11):1009–1017. doi:10.1056/NEJMoa2010834.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r7"><div style="font-weight:600;font-size:13px"><span class="ref-num">7</span> · McConville JF, Kress JP.</div><p style="margin-top:4px">Weaning Patients from the Ventilator. <em>N Engl J Med.</em> 2012;367(23):2233–9. doi:10.1056/NEJMra1203367.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r8"><div style="font-weight:600;font-size:13px"><span class="ref-num">8</span> · Serpa Neto A, Cardoso SO, Manetta JA, et al.</div><p style="margin-top:4px">Lung-Protective Ventilation With Lower Tidal Volumes and Clinical Outcomes in Patients Without ARDS: A Meta-analysis. <em>JAMA.</em> 2012;308(16):1651–9. doi:10.1001/jama.2012.13730.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r8b"><div style="font-weight:600;font-size:13px"><span class="ref-num">8b</span> · Mitchell RB, Hussey HM, Setzen G, et al. (AAO-HNS)</div><p style="margin-top:4px">Clinical Consensus Statement: Tracheostomy Care. <em>Otolaryngol Head Neck Surg.</em> 2013;148(1):6–20. doi:10.1177/0194599812460376.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r9"><div style="font-weight:600;font-size:13px"><span class="ref-num">9</span> · Linares-Perdomo O, East TD, Brower R, Morris AH.</div><p style="margin-top:4px">Standardizing Predicted Body Weight Equations for Mechanical Ventilation Tidal Volume Settings. <em>Chest.</em> 2015;148(1):73–78. doi:10.1378/chest.14-2843.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r9b"><div style="font-weight:600;font-size:13px"><span class="ref-num">9b</span> · Trivedi V, Chaudhuri D, Jinah R, et al.</div><p style="margin-top:4px">Usefulness of the Rapid Shallow Breathing Index in Predicting Successful Extubation: Systematic Review and Meta-Analysis. <em>Chest.</em> 2022;161(1):97–111. doi:10.1016/j.chest.2021.06.030.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r12"><div style="font-weight:600;font-size:13px"><span class="ref-num">12</span> · Parada-Gereda HM, Tibaduiza AL, Rico-Mendoza A, et al.</div><p style="margin-top:4px">Diaphragmatic Ultrasound as a Predictor of Successful Weaning: Systematic Review and Meta-Analysis. <em>Crit Care.</em> 2023;27(1):174. doi:10.1186/s13054-023-04430-9.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r14"><div style="font-weight:600;font-size:13px"><span class="ref-num">14</span> · Goel NN, Ferreyro BL, Pitre T, et al. (ATS)</div><p style="margin-top:4px">Noninvasive Respiratory Support for Adult Patients With Acute Respiratory Failure — Official ATS Clinical Practice Guideline. <em>Am J Respir Crit Care Med.</em> 2026. doi:10.1093/ajrccm/aamag302.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r16b"><div style="font-weight:600;font-size:13px"><span class="ref-num">16b</span> · Goharani R, Vahedian-Azimi A, Galal IH, et al.</div><p style="margin-top:4px">An RSBI Threshold of 85 Best Predicts Extubation Success in COPD With Hypercapnic Respiratory Failure. <em>J Thorac Dis.</em> 2019;11(4):1223–1232. doi:10.21037/jtd.2019.03.103.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r18"><div style="font-weight:600;font-size:13px"><span class="ref-num">18</span> · Oto B, Annesi J, Foley RJ.</div><p style="margin-top:4px">Patient-Ventilator Dyssynchrony in the ICU: A Practical Approach to Diagnosis and Management. <em>Anaesth Intensive Care.</em> 2021;49(2):86–97. doi:10.1177/0310057X20978981.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r21"><div style="font-weight:600;font-size:13px"><span class="ref-num">21</span> · Reyes MRL, Elmo MJ, Menachem B, Granda SM.</div><p style="margin-top:4px">A Primary Care Provider's Guide to Managing Respiratory Health in Subacute and Chronic Spinal Cord Injury. <em>Top Spinal Cord Inj Rehabil.</em> 2020;26(2):116–122. doi:10.46292/sci2602-116.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r22"><div style="font-weight:600;font-size:13px"><span class="ref-num">22</span> · Jubran A, Grant BJB, Duffner LA, et al.</div><p style="margin-top:4px">Pressure Support vs Unassisted Breathing Through a Tracheostomy Collar on Weaning Duration in Prolonged Mechanical Ventilation: A Randomized Trial. <em>JAMA.</em> 2013;309(7):671–7. doi:10.1001/jama.2013.159.</p></div></div>
+
+    <p class="footer-note">
+      Point-of-care summary for clinicians. Adapt to institutional capabilities, transfer agreements, and individual patient factors. Not a substitute for clinical judgment.<br>
+      Pulm References · SNF Pulmonology
+    </p>
+  </div>
+
+</div>
+
+<script>
+/* ---------- tab switching ---------- */
+function switchTab(n,b){
+  ['modes','init','manage','wean','airway','decan','trouble','emerg','refs'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display = (t===n)?'block':'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+/* ---------- PBW / Vt calculator ---------- */
+let sex='m', unit='cm';
+function setSex(s){ sex=s; document.getElementById('sex-m').classList.toggle('on',s==='m'); document.getElementById('sex-f').classList.toggle('on',s==='f'); calcPBW(); }
+function setUnit(u){ unit=u; document.getElementById('unit-cm').classList.toggle('on',u==='cm'); document.getElementById('unit-in').classList.toggle('on',u==='in'); document.getElementById('ht-label').textContent = u==='cm'?'Height (cm)':'Height (inches)'; calcPBW(); }
+function calcPBW(){
+  const raw=parseFloat(document.getElementById('ht').value);
+  const set=(id,v)=>document.getElementById(id).textContent=v;
+  if(!raw||raw<=0){ ['pbw-out','vt6-out','vt7-out','vt8-out'].forEach(id=>set(id,'—')); return; }
+  const cm = unit==='cm'?raw:raw*2.54;
+  const base = sex==='m'?50:45.5;
+  let pbw = base + 0.91*(cm-152.4);
+  if(pbw<10){ ['pbw-out','vt6-out','vt7-out','vt8-out'].forEach(id=>set(id,'—')); return; }
+  set('pbw-out', pbw.toFixed(1));
+  set('vt6-out', Math.round(pbw*6));
+  set('vt7-out', Math.round(pbw*7));
+  set('vt8-out', Math.round(pbw*8));
+}
+
+/* ---------- RSBI ---------- */
+function calcRSBI(){
+  const rr=parseFloat(document.getElementById('rsbi-rr').value);
+  const vtml=parseFloat(document.getElementById('rsbi-vt').value);
+  const out=document.getElementById('rsbi-out'); const interp=document.getElementById('rsbi-interp');
+  if(!rr||!vtml||vtml<=0){ out.textContent='—'; interp.textContent=''; interp.className='score-interp'; return; }
+  const rsbi = rr/(vtml/1000);
+  out.textContent = Math.round(rsbi);
+  if(rsbi<=105){ interp.textContent='≤ 105 — favors SBT attempt'; interp.className='score-interp score-low'; }
+  else { interp.textContent='> 105 — higher failure risk'; interp.className='score-interp score-high'; }
+}
+
+/* ---------- readiness screen ---------- */
+const screenItems=[
+  {k:'cause',t:'Underlying cause of ventilator dependence improving or resolved'},
+  {k:'ox',   t:'SpO₂ ≥ 90% on FiO₂ ≤ 0.40 and PEEP ≤ 5–8 cmH₂O'},
+  {k:'hemo', t:'Hemodynamically stable — no or minimal vasopressors'},
+  {k:'ment', t:'Awake, alert, follows commands (or neurologic baseline)'},
+  {k:'rr',   t:'Respiratory rate ≤ 35 breaths/min'},
+  {k:'cough',t:'Adequate cough with suctioning'},
+  {k:'sec',  t:'Manageable secretion volume'},
+  {k:'sed',  t:'Minimal or no sedation'},
+];
+const screenState={};
+function renderScreen(){
+  document.getElementById('screen-list').innerHTML=screenItems.map(x=>`
+    <button class="check-item ${screenState[x.k]?'checked':''}" onclick="toggleScreen('${x.k}')">
+      <span class="check-box">${screenState[x.k]?'✓':''}</span><span>${x.t}</span></button>`).join('');
+  const met=screenItems.every(x=>screenState[x.k]);
+  const r=document.getElementById('screen-result');
+  if(met){ r.className='result-met'; r.textContent='All criteria met — candidate for SBT / weaning advance'; }
+  else { const n=screenItems.filter(x=>screenState[x.k]).length; r.className='result-notmet'; r.textContent=`${n}/${screenItems.length} met — hold, address reversible barriers`; }
+}
+function toggleScreen(k){ screenState[k]=!screenState[k]; renderScreen(); }
+function resetScreen(){ screenItems.forEach(x=>screenState[x.k]=false); renderScreen(); }
+renderScreen();
+
+/* ---------- decannulation checklist ---------- */
+const decanItems=[
+  {k:'vf',   t:'Ventilator-free for ≥ 24 hours'},
+  {k:'ind',  t:'Original indication for tracheostomy resolved / improved'},
+  {k:'cough',t:'Adequate cough and secretion clearance'},
+  {k:'suc',  t:'Suctioning ≤ 2 episodes per 8 hours'},
+  {k:'ment', t:'Awake, alert, follows commands (or neurologic baseline)'},
+  {k:'cuff', t:'Cuff deflation tolerated ≥ 12–24 hours'},
+  {k:'cap',  t:'Capping trial passed 24–48 h OR suctioning criterion met'},
+  {k:'swal', t:'Swallowing assessment — no gross aspiration'},
+  {k:'air',  t:'Airway patency confirmed (laryngoscopy/bronch if indicated)'},
+  {k:'proc', t:'No planned procedures requiring re-intubation'},
+  {k:'kit',  t:'Emergency airway equipment at bedside'},
+  {k:'ord',  t:'Physician order for decannulation obtained'},
+];
+const decanState={};
+function renderDecan(){
+  document.getElementById('decan-list').innerHTML=decanItems.map(x=>`
+    <button class="check-item ${decanState[x.k]?'checked':''}" onclick="toggleDecan('${x.k}')">
+      <span class="check-box">${decanState[x.k]?'✓':''}</span><span>${x.t}</span></button>`).join('');
+  const met=decanItems.every(x=>decanState[x.k]);
+  const r=document.getElementById('decan-result');
+  if(met){ r.className='result-met'; r.textContent='All criteria met — proceed with decannulation per order'; }
+  else { const n=decanItems.filter(x=>decanState[x.k]).length; r.className='result-notmet'; r.textContent=`${n}/${decanItems.length} met — not yet ready`; }
+}
+function toggleDecan(k){ decanState[k]=!decanState[k]; renderDecan(); }
+function resetDecan(){ decanItems.forEach(x=>decanState[x.k]=false); renderDecan(); }
+renderDecan();
+</script>
+</body>
+</html>
