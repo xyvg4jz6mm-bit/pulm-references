@@ -353,6 +353,94 @@
       </ul>
       <p style="margin-top:8px;font-size:12px">Start 15–30 min trials; remove immediately for distress, stridor, or desaturation.</p>
     </div></div>
+
+    <h2>Capping Trials — HVLP Cuffed Tubes</h2>
+    <div class="notice notice-red" style="background:var(--red-bg);border:1px solid #D98A93;color:var(--red)">
+      <strong>Core safety rule:</strong> NEVER cap a trach with the cuff inflated — the cap blocks the tube and the cuff seals the trachea, leaving no route for air. <strong>Fully deflate the cuff</strong> (confirm 0 cmH₂O) before any cap, speaking valve, or finger-occlusion test.
+    </div>
+
+    <div class="card"><div class="card-body">
+      <h3>Why HVLP cuffs confound capping</h3>
+      <p style="margin-top:6px">High-volume, low-pressure (HVLP) PVC cuffs (Shiley LPC, Portex) rest wider than the trachea. Deflated, the excess material can't retract — it folds, wrinkles and bunches around the shaft, adding <b>significant, unpredictable airway resistance</b>.</p>
+      <ul class="tight">
+        <li>Bench data: deflated HVLP cuffs produce tracheal pressure drops up to <b>3.4–4.2 kPa at 60 L/min</b> vs negligible for uncuffed tubes<sup><a href="#r23">23</a></sup></li>
+        <li>Three deformation modes — sail-like, folding-over, tightening — vary by maker and tube size</li>
+        <li><b>Clinical trap:</b> a patient may fail capping from cuff-material resistance, not true upper-airway obstruction or inadequate reserve</li>
+      </ul>
+      <p style="margin-top:8px;font-size:12px">Contrast with tight-to-shaft (TTS) cuffs (Bivona), which retract flush when deflated. TTS or uncuffed tubes are preferred for capping/decannulation.<sup><a href="#r24">24</a></sup> AAO-HNS: the tube during a capping trial should be <em>uncuffed</em> and may need downsizing.<sup><a href="#r8b">8b</a></sup></p>
+    </div></div>
+
+    <div class="card" style="margin-top:8px"><div class="card-body">
+      <h3>Prep before any capping trial</h3>
+      <div class="row-kv"><span class="kv-key">1 · Downsize</span><span class="kv-val">Smallest HVLP tube (ID ≤ 6 mm); fenestrated if available; hold ≥ 24 h</span></div>
+      <div class="row-kv"><span class="kv-key">2 · Deflate cuff</span><span class="kv-val">Suction above cuff first; confirm 0 cmH₂O; tolerate ≥ 12 h</span></div>
+      <div class="row-kv"><span class="kv-key">3 · Occlusion test</span><span class="kv-val">Finger-occlude 5 min (cuff down) to screen airflow</span></div>
+    </div></div>
+    <div class="notice notice-amber" style="margin-top:8px">
+      <strong>Occlusion test fails</strong> (stridor, distress, can't phonate) → do NOT cap. Order bronchoscopy/laryngoscopy for stenosis, granulation, tracheomalacia, cord dysfunction, suprastomal or tube-related obstruction. If the <em>only</em> cause is deflated cuff material and the upper airway is patent → go to Pathway B or obtain a TTS/uncuffed tube.
+    </div>
+
+    <div class="seg" style="margin-top:14px">
+      <button id="cap-a" onclick="setCap('a')">Pathway A · Modified Cap</button>
+      <button id="cap-b" class="on" onclick="setCap('b')">Pathway B · Suctioning</button>
+    </div>
+
+    <!-- PATHWAY A -->
+    <div id="cap-path-a" style="display:none">
+      <div class="card"><div class="card-body">
+        <h3>Modified capping trial</h3>
+        <p style="margin-top:6px">Traditional trial with HVLP-specific modifications. Use when a physician specifically wants to demonstrate upper-airway patency by capping.</p>
+        <ul class="tight">
+          <li>Reconfirm cuff fully deflated; insert fenestrated inner cannula if available</li>
+          <li>Place decannulation cap; start supervised <b>1 h daytime</b> trial</li>
+          <li>Continuous SpO₂; vitals q15 min × 1 h, then q30 min</li>
+          <li>Advance 1 h → 4 h → 8 h → 12 h → 24 h; each step tolerated before advancing</li>
+          <li>Include ≥ 1 overnight; assess during sleep, meals, activity</li>
+        </ul>
+      </div></div>
+      <div class="card" style="margin-top:8px"><div class="card-body">
+        <h3>Remove cap immediately if</h3>
+        <div class="row-kv"><span class="kv-key">SpO₂</span><span class="kv-val">&lt; 90% (or patient target)</span></div>
+        <div class="row-kv"><span class="kv-key">RR</span><span class="kv-val">&gt; 35/min for &gt; 5 min</span></div>
+        <div class="row-kv"><span class="kv-key">HR</span><span class="kv-val">&gt; 140 or Δ &gt; 20%</span></div>
+        <div class="row-kv"><span class="kv-key">SBP</span><span class="kv-val">&lt; 90 or &gt; 180 mmHg</span></div>
+        <div class="row-kv"><span class="kv-key">Airway</span><span class="kv-val">Stridor, accessory muscle use, paradox</span></div>
+        <div class="row-kv"><span class="kv-key">Patient</span><span class="kv-val">Diaphoresis, agitation, requests removal</span></div>
+      </div></div>
+      <div class="notice notice-amber" style="margin-top:8px">
+        <strong>If a trial fails,</strong> distinguish (1) true obstruction → bronch/laryngoscopy, (2) inadequate reserve → rehab &amp; retry, (3) HVLP cuff artifact. If bronchoscopy shows a patent airway and only deflated cuff material limits flow, interpret failure with caution → switch to Pathway B, obtain a TTS/uncuffed tube, or consider bronchoscopy-guided decannulation without capping.<sup><a href="#r25">25</a></sup>
+      </div>
+      <div class="notice notice-green" style="margin-top:8px">
+        <strong>Success:</strong> 24 h continuous capping (incl. overnight) without failure criteria → pre-decannulation assessments (SLP swallow, airway exam) then decannulate.
+      </div>
+    </div>
+
+    <!-- PATHWAY B -->
+    <div id="cap-path-b">
+      <div class="notice notice-blue">
+        <strong>Preferred with HVLP tubes.</strong> Bypasses the cap entirely — removes the cuff-resistance confounder. REDECAP: suctioning-based assessment cut time to decannulation by a median <b>7 days (6 vs 13)</b> with no increase in failure; <b>73.3%</b> failed ≥ 1 capping trial yet many were decannulated out of protocol.<sup><a href="#r4">4</a></sup>
+      </div>
+      <div class="card"><div class="card-body">
+        <h3>Suctioning-frequency assessment (REDECAP)</h3>
+        <ul class="tight">
+          <li>Cuff deflated; humidified O₂ via trach collar (or high-flow)</li>
+          <li>Log every suction episode (time, volume, character) over 24 h</li>
+        </ul>
+        <div class="row-kv" style="margin-top:8px"><span class="kv-key">Readiness criterion</span><span class="kv-val">≤ 2 suction/8 h shift (≤ 6/24 h) × 24 h</span></div>
+        <div class="row-kv"><span class="kv-key">Plus</span><span class="kv-val">SpO₂ ≥ 92%, no distress, effective cough, no active infection</span></div>
+      </div></div>
+      <div class="card" style="margin-top:8px"><div class="card-body">
+        <h3>If criterion not met</h3>
+        <p style="margin-top:6px">Continue trach collar (cuff down); optimize secretions (humidification, hydration, mucolytics, chest PT); reassess in 24–48 h. Persistent high suctioning → investigate infection, aspiration, tracheal pathology.</p>
+      </div></div>
+      <div class="notice notice-green" style="margin-top:8px">
+        <strong>If met</strong> → pre-decannulation assessments (SLP swallow with cuff deflated; fiberoptic airway exam) then decannulate. Bronchoscopy-guided non-capping decannulation is an emerging alternative with shorter time to decannulation and fewer infectious complications.<sup><a href="#r25">25</a></sup>
+      </div>
+    </div>
+
+    <div class="notice notice-amber" style="margin-top:12px">
+      <strong>Full decannulation criteria &amp; checklist</strong> live on the <em>Decannulate</em> tab. Keep the bedside emergency airway kit ready throughout (<em>Emergency</em> tab).
+    </div>
   </div>
 
   <!-- ============ DECANNULATE ============ -->
@@ -517,6 +605,9 @@
     <div class="card" style="margin-top:8px"><div class="card-body" id="r18"><div style="font-weight:600;font-size:13px"><span class="ref-num">18</span> · Oto B, Annesi J, Foley RJ.</div><p style="margin-top:4px">Patient-Ventilator Dyssynchrony in the ICU: A Practical Approach to Diagnosis and Management. <em>Anaesth Intensive Care.</em> 2021;49(2):86–97. doi:10.1177/0310057X20978981.</p></div></div>
     <div class="card" style="margin-top:8px"><div class="card-body" id="r21"><div style="font-weight:600;font-size:13px"><span class="ref-num">21</span> · Reyes MRL, Elmo MJ, Menachem B, Granda SM.</div><p style="margin-top:4px">A Primary Care Provider's Guide to Managing Respiratory Health in Subacute and Chronic Spinal Cord Injury. <em>Top Spinal Cord Inj Rehabil.</em> 2020;26(2):116–122. doi:10.46292/sci2602-116.</p></div></div>
     <div class="card" style="margin-top:8px"><div class="card-body" id="r22"><div style="font-weight:600;font-size:13px"><span class="ref-num">22</span> · Jubran A, Grant BJB, Duffner LA, et al.</div><p style="margin-top:4px">Pressure Support vs Unassisted Breathing Through a Tracheostomy Collar on Weaning Duration in Prolonged Mechanical Ventilation: A Randomized Trial. <em>JAMA.</em> 2013;309(7):671–7. doi:10.1001/jama.2013.159.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r23"><div style="font-weight:600;font-size:13px"><span class="ref-num">23</span> · Nowak A, Martin S, Höhne M, et al.</div><p style="margin-top:4px">Tracheal Airway Pressure in Tracheostomy Tube Capping Trials: An Experimental Study. <em>BMC Pulm Med.</em> 2022;22(1):484. doi:10.1186/s12890-022-02277-4.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r24"><div style="font-weight:600;font-size:13px"><span class="ref-num">24</span> · McCracken J, Leasa D.</div><p style="margin-top:4px">Trach Tubes Designed to Maximize Safety May Increase Risk to Ventilated Patients. <em>Crit Care.</em> 2010;14(6):1008. doi:10.1186/cc9306.</p></div></div>
+    <div class="card" style="margin-top:8px"><div class="card-body" id="r25"><div style="font-weight:600;font-size:13px"><span class="ref-num">25</span> · Gao R, Wang G, Ni P, et al.</div><p style="margin-top:4px">Bronchoscopy-Guided Non-Capping Decannulation Pathway Versus Conventional Capping Trial in Prolonged Tracheostomy: A Retrospective Comparative Cohort Study. <em>Front Med.</em> 2026;13:1825058. doi:10.3389/fmed.2026.1825058.</p></div></div>
 
     <p class="footer-note">
       Point-of-care summary for clinicians. Adapt to institutional capabilities, transfer agreements, and individual patient factors. Not a substitute for clinical judgment.<br>
@@ -620,6 +711,14 @@ function renderDecan(){
 function toggleDecan(k){ decanState[k]=!decanState[k]; renderDecan(); }
 function resetDecan(){ decanItems.forEach(x=>decanState[x.k]=false); renderDecan(); }
 renderDecan();
+
+/* ---------- capping pathway toggle ---------- */
+function setCap(p){
+  document.getElementById('cap-path-a').style.display = (p==='a')?'block':'none';
+  document.getElementById('cap-path-b').style.display = (p==='b')?'block':'none';
+  document.getElementById('cap-a').classList.toggle('on',p==='a');
+  document.getElementById('cap-b').classList.toggle('on',p==='b');
+}
 </script>
 </body>
 </html>
